@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+
+<BorderPane prefHeight="340.0" prefWidth="414.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.xaatw0.sql2bean.fx.FXController">
+   <bottom>
+      <HBox prefHeight="28.0" prefWidth="414.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button id="btnExecute" mnemonicParsing="false" text="Execute" />
+            <Button id="btnSave" mnemonicParsing="false" text="Save" />
+         </children>
+      </HBox>
+   </bottom>
+   <top>
+      <TextArea id="txtSql" prefHeight="200.0" prefWidth="312.0" BorderPane.alignment="CENTER" />
+   </top>
+   <center>
+      <TableView id="tblResult" prefHeight="153.0" prefWidth="414.0" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>
