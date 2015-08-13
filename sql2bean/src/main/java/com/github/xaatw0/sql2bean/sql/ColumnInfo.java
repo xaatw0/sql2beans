@@ -33,10 +33,18 @@ public class ColumnInfo {
 	}
 
 	public String getCamelName(){
+		Matcher m = PTN_SNEKE_CASE.matcher(name.toLowerCase());
+		return convertUnderToBig(m);
+	}
+
+	public String getPascalName(){
 
 		Matcher m = PTN_SNEKE_CASE.matcher(
 				name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase());
+		return convertUnderToBig(m);
+	}
 
+	private String convertUnderToBig(Matcher m){
 		StringBuffer sb = new StringBuffer(name.length());
 		while (m.find()) {
 			m.appendReplacement(sb, m.group(1).toUpperCase());

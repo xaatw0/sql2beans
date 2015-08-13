@@ -37,8 +37,15 @@ public class ColumnInfoTest {
 	public void getCamelName() {
 		ColumnInfo info = new ColumnInfo("USER_ID", DataType.Integer);
 		assertThat(info.getName(), is( "USER_ID"));
-		assertThat(info.getCamelName(), is( "UserId"));
+		assertThat(info.getCamelName(), is( "userId"));
 	}
+
+	@Test
+	public void getPascalName() {
+		ColumnInfo info = new ColumnInfo("USER_ID", DataType.Integer);
+		assertThat(info.getPascalName(), is( "UserId"));
+	}
+
 
 	@Test
 	public void start() throws SQLException, ClassNotFoundException, UnsupportedDataTypeException{

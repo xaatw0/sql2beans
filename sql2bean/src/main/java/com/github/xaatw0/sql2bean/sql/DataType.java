@@ -10,15 +10,21 @@ import java.util.stream.IntStream;
 public enum DataType {
 
 	/** 文字型 */
-	String(Types.VARCHAR),
+	String(String.class, Types.VARCHAR),
 	/** 数字型 */
-	Integer(Types.INTEGER);
-
+	Integer(Integer.class, Types.INTEGER);
 
 	private int[] types;
 
-	private DataType(int... type){
+	private Class<?> clazz;
+
+	private DataType(Class<?> clazz, int... type){
+		this.clazz = clazz;
 		this.types = type;
+	}
+
+	public Class<?> getClazz(){
+		return clazz;
 	}
 
 	/**

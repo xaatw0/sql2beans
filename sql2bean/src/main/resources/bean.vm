@@ -1,0 +1,16 @@
+package $package_name;
+
+public class $bean_name{
+#foreach ($data in $list)
+
+	private $data.type $data.CamelName;
+
+	public void set${data.PascalName}(${data.type} ${data.CamelName}){
+		this.$data.CamelName = $data.CamelName;
+	}
+
+	public $data.type get${data.PascalName}(){
+		return $data.CamelName;
+	}
+#end
+}
