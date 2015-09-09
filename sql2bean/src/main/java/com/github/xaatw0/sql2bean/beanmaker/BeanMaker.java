@@ -97,5 +97,4 @@ public class BeanMaker {
 
 		compile(packageName +"." + className , write(dataType, packageName, className));
 	}
-
 }
