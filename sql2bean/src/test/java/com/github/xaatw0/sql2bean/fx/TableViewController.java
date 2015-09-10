@@ -22,33 +22,38 @@ public class TableViewController  implements Initializable{
 
 	public void initialize(URL location, ResourceBundle resources) {
 
-		TableColumn colFirstName = new TableColumn("First Name");
+		TableColumn<Person, String> colFirstName = new TableColumn<>("First Name");
 		colFirstName.setPrefWidth(80);
-		colFirstName.setCellValueFactory(new PropertyValueFactory("firstName"));
+		colFirstName.setCellValueFactory(new PropertyValueFactory<Person,String>("firstName"));
 
-		TableColumn colLastName = new TableColumn("Last Name");
+		TableColumn<Person, String> colLastName = new TableColumn<>("Last Name");
 		colLastName.setPrefWidth(80);
-		colLastName.setCellValueFactory(new PropertyValueFactory("lastName"));
+		colLastName.setCellValueFactory(new PropertyValueFactory<Person,String>("lastName"));
 
-		tableView.getColumns().addAll(colFirstName, colLastName);
+		TableColumn<Person, Integer> colAge = new TableColumn<>("Age");
+		colAge.setPrefWidth(80);
+		colAge.setCellValueFactory(new PropertyValueFactory<Person,Integer>("age"));
+
+		tableView.getColumns().addAll(colFirstName, colLastName, colAge);
 		tableView.getSelectionModel().selectedItemProperty().addListener(
 				(ObservableValue<? extends Person> observale, Person oldValue, Person newValue)->{
 
 					Person selectedPerson = newValue;
+					System.out.println(selectedPerson.toString());
 
 				});
 
 		ObservableList<Person> list = FXCollections.observableArrayList();
-		list.add(new Person("Michel", "Jacson"));
-		list.add(new Person("Miles", "Davis"));
+		list.add(new Person("Michel", "Jacson",40));
+		list.add(new Person("Miles", "Davis",30));
 
 		tableView.setItems(list);
 	}
 
 
 	public class Person{
+
 		private StringProperty firstName;
-		private StringProperty lastName;
 
 		public StringProperty firstNameProperty(){
 			if (firstName == null)
@@ -64,6 +69,8 @@ public class TableViewController  implements Initializable{
 			return firstNameProperty().get();
 		}
 
+		private StringProperty lastName;
+
 		public StringProperty lastNameProperty(){
 			if (lastName == null)
 				lastName = new SimpleStringProperty("Last Name");
@@ -78,9 +85,25 @@ public class TableViewController  implements Initializable{
 			return lastNameProperty().get();
 		}
 
-		public Person(String firstName, String lastName){
+		private int age;
+
+		public void setAge(int age){
+			this.age = age;
+		}
+
+		public int getAge(){
+			return age;
+		}
+
+		public Person(String firstName, String lastName, int age){
 			setFirstName(firstName);
 			setLastName(lastName);
+			setAge(age);
+		}
+
+		@Override
+		public String toString(){
+			return "Person[" + firstName.get() + "," + lastName.get() + "," + age +"]";
 		}
 
 	}
