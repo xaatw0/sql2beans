@@ -15,7 +15,10 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class TableViewController  implements Initializable{
-	@FXML private TableView tableView;
+
+
+	@FXML private TableView<Person> tableView;
+
 
 	public void initialize(URL location, ResourceBundle resources) {
 
@@ -29,9 +32,9 @@ public class TableViewController  implements Initializable{
 
 		tableView.getColumns().addAll(colFirstName, colLastName);
 		tableView.getSelectionModel().selectedItemProperty().addListener(
-				(ObservableValue observale, Object oldValue, Object newValue)->{
+				(ObservableValue<? extends Person> observale, Person oldValue, Person newValue)->{
 
-					Person selectedPerson = (Person) newValue;
+					Person selectedPerson = newValue;
 
 				});
 
