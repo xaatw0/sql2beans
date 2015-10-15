@@ -5,12 +5,12 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-
 <BorderPane prefHeight="340.0" prefWidth="414.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.xaatw0.sql2bean.fx.FXController">
    <bottom>
       <HBox prefHeight="28.0" prefWidth="414.0" BorderPane.alignment="CENTER">
          <children>
             <Button id="btnExecute" fx:id="btnExecute" mnemonicParsing="false" onAction="#execute" text="Execute" />
+            <Button fx:id="btnLoad" mnemonicParsing="false" text="Button" />
             <Button id="btnSave" fx:id="btnSave" mnemonicParsing="false" onAction="#save" text="Save" />
          </children>
       </HBox>
