@@ -27,8 +27,9 @@ public class FXController implements Initializable{
 
 	private StringProperty sql = new SimpleStringProperty();
 
-	public void initialize(URL location, ResourceBundle resources) {
 
+
+	public void initialize(URL location, ResourceBundle resources) {
 	}
 
 	@FXML

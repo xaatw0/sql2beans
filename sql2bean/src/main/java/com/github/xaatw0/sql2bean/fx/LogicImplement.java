@@ -7,12 +7,6 @@ public class LogicImplement implements LogicInterface {
 
 
 	@Override
-	public void save(String sql) {
-		// TODO 自動生成されたメソッド・スタブ
-
-	}
-
-	@Override
 	public ResultSet execute(String sql) {
 		// TODO 自動生成されたメソッド・スタブ
 		return null;
@@ -20,6 +14,18 @@ public class LogicImplement implements LogicInterface {
 
 	@Override
 	public ResultSetMetaData getMetaData() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public void save(String id, String sql) {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
+	@Override
+	public String load(String sqlId) {
 		// TODO 自動生成されたメソッド・スタブ
 		return null;
 	}

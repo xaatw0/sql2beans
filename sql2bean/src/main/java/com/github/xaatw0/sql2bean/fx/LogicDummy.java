@@ -52,14 +52,24 @@ public class LogicDummy implements LogicInterface {
 	}
 
 	@Override
-	public void save(String sql) {
+	public ResultSetMetaData getMetaData() {
+		return metaData;
+	}
+
+
+
+	@Override
+	public void save(String id, String sql) {
 		// TODO 自動生成されたメソッド・スタブ
 
 	}
 
+
+
 	@Override
-	public ResultSetMetaData getMetaData() {
-		return metaData;
+	public String load(String sqlId) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
 	}
 
 }

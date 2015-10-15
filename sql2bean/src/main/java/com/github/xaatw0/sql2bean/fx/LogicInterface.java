@@ -22,5 +22,17 @@ public interface LogicInterface {
 	 */
 	ResultSetMetaData getMetaData();
 
-	void save(String sql);
+	/**
+	 * 作成したSQLを保存する
+	 * @param id SQLのID
+	 * @param sql 保存するSQL
+	 */
+	void save(String id, String sql);
+
+	/**
+	 * 保存したSQLを呼び出す
+	 * @param sqlId SQLのID
+	 * @return 保存したSQLの内容
+	 */
+	String load(String sqlId);
 }
