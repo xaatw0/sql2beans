@@ -7,6 +7,9 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import javax.activation.UnsupportedDataTypeException;
 
 
@@ -18,7 +21,15 @@ public class ColumnInfo {
 
 	final static Pattern PTN_SNEKE_CASE = Pattern.compile("_([a-z])");
 
-	private String name;
+	private StringProperty name;
+	public StringProperty name(){
+		if (name == null) name = new SimpleStringProperty(this, "Column Name");
+		return name;
+	}
+
+	public void setName(String name){ name().set(name);}
+	public String getName(){ return name().get();}
+
 	private DataType type;
 
 	/**
@@ -28,16 +39,8 @@ public class ColumnInfo {
 	 */
 	public ColumnInfo(String name, DataType type){
 
-		this.name = name;
+		name().set(name);
 		this.type = type;
-	}
-
-	/**
-	 * 項目名を取得する
-	 * @return 項目名
-	 */
-	public String getName(){
-		return name;
 	}
 
 	/**
@@ -53,8 +56,7 @@ public class ColumnInfo {
 	 * @return 項目名(キャメル式)
 	 */
 	public String getCamelName(){
-		Matcher m = PTN_SNEKE_CASE.matcher(name.toLowerCase());
-		return convertUnderToBig(m);
+		return convertUnderToBig(getName().toLowerCase());
 	}
 
 	/**
@@ -63,9 +65,7 @@ public class ColumnInfo {
 	 */
 	public String getPascalName(){
 
-		Matcher m = PTN_SNEKE_CASE.matcher(
-				name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase());
-		return convertUnderToBig(m);
+		return convertUnderToBig(getName().substring(0, 1).toUpperCase() + getName().substring(1).toLowerCase());
 	}
 
 	/**
@@ -73,8 +73,11 @@ public class ColumnInfo {
 	 * @param m パターン
 	 * @return
 	 */
-	private String convertUnderToBig(Matcher m){
-		StringBuffer sb = new StringBuffer(name.length());
+	private String convertUnderToBig(String name){
+
+		Matcher m = PTN_SNEKE_CASE.matcher(name);
+
+		StringBuffer sb = new StringBuffer(getName().length());
 		while (m.find()) {
 			m.appendReplacement(sb, m.group(1).toUpperCase());
 		}
