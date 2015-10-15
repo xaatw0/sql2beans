@@ -10,6 +10,9 @@ import java.util.regex.Pattern;
 import javax.activation.UnsupportedDataTypeException;
 
 
+/**
+ * DBより取得したコラムの情報。一つのコラムで一つのインスタンス。
+ */
 public class ColumnInfo {
 
 
@@ -18,25 +21,46 @@ public class ColumnInfo {
 	private String name;
 	private DataType type;
 
+	/**
+	 * データベースのテーブルの項目
+	 * @param name テーブルの項目名
+	 * @param type 項目の種類
+	 */
 	public ColumnInfo(String name, DataType type){
 
 		this.name = name;
 		this.type = type;
 	}
 
+	/**
+	 * 項目名を取得する
+	 * @return 項目名
+	 */
 	public String getName(){
 		return name;
 	}
 
+	/**
+	 * 項目の種類を取得する
+	 * @return 項目の種類(文字型、数字型、等)
+	 */
 	public DataType getType(){
 		return type;
 	}
 
+	/**
+	 * 項目名をキャメル式で取得する
+	 * @return 項目名(キャメル式)
+	 */
 	public String getCamelName(){
 		Matcher m = PTN_SNEKE_CASE.matcher(name.toLowerCase());
 		return convertUnderToBig(m);
 	}
 
+	/**
+	 * 項目名をパスカル式で取得する
+	 * @return 項目名(パスカル式)
+	 */
 	public String getPascalName(){
 
 		Matcher m = PTN_SNEKE_CASE.matcher(
@@ -44,6 +68,11 @@ public class ColumnInfo {
 		return convertUnderToBig(m);
 	}
 
+	/**
+	 * 小文字を大文字にして返す
+	 * @param m パターン
+	 * @return
+	 */
 	private String convertUnderToBig(Matcher m){
 		StringBuffer sb = new StringBuffer(name.length());
 		while (m.find()) {
@@ -53,6 +82,13 @@ public class ColumnInfo {
 		return sb.toString();
 	}
 
+	/**
+	 * 実施したSQLのメタデータをColumnInfoの配列に変換する
+	 * @param meta メタデータ
+	 * @return ColumnInfoの配列
+	 * @throws SQLException
+	 * @throws UnsupportedDataTypeException
+	 */
 	public static ColumnInfo[] createColumnInfo(ResultSetMetaData meta) throws SQLException, UnsupportedDataTypeException{
 
 		ColumnInfo[] info = new ColumnInfo[meta.getColumnCount()];
