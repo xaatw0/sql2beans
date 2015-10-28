@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -30,7 +32,20 @@ public class ColumnInfo {
 	public void setName(String name){ name().set(name);}
 	public String getName(){ return name().get();}
 
-	private DataType type;
+	private SimpleObjectProperty<DataType> type;
+
+	public ObjectProperty<DataType> type(){
+		if (type == null) type = new SimpleObjectProperty<DataType>(this, "type");
+		return type;
+	}
+
+	public void setType(DataType value){
+		type.set(value);
+	}
+
+	public DataType getType(){
+		return type.get();
+	}
 
 	/**
 	 * データベースのテーブルの項目
@@ -40,15 +55,7 @@ public class ColumnInfo {
 	public ColumnInfo(String name, DataType type){
 
 		name().set(name);
-		this.type = type;
-	}
-
-	/**
-	 * 項目の種類を取得する
-	 * @return 項目の種類(文字型、数字型、等)
-	 */
-	public DataType getType(){
-		return type;
+		type().set(type);
 	}
 
 	/**

@@ -3,6 +3,7 @@ package com.github.xaatw0.sql2bean.fx;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 
+import com.github.xaatw0.sql2bean.sql.ColumnInfo;
 import com.google.inject.ImplementedBy;
 
 @ImplementedBy(LogicImplement.class)
@@ -21,6 +22,12 @@ public interface LogicInterface {
 	 * @return
 	 */
 	ResultSetMetaData getMetaData();
+
+	/**
+	 * 前回実施したSQLの結果のメタデータを取得する
+	 * @return
+	 */
+	ColumnInfo[] getColumnInfo();
 
 	/**
 	 * 作成したSQLを保存する

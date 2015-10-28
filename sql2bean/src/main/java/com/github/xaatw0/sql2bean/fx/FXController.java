@@ -1,6 +1,8 @@
 package com.github.xaatw0.sql2bean.fx;
 
 import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -13,11 +15,15 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 
+import javax.activation.UnsupportedDataTypeException;
+
 import com.github.xaatw0.sql2bean.sql.ColumnInfo;
+import com.google.inject.Inject;
 
 public class FXController implements Initializable{
 
 
+	@Inject
 	private LogicInterface logic;
 
 	@FXML private TextArea txtSql;
@@ -25,20 +31,31 @@ public class FXController implements Initializable{
 	@FXML private Button btnExecute;
 	@FXML private Button btnSave;
 
-	private StringProperty sql = new SimpleStringProperty();
+	private StringProperty sql = new SimpleStringProperty(this, "sql");
+	public StringProperty sql(){
+		return sql;
+	}
 
+	public void setSql(String value){
+		sql().set(value);
+	}
 
+	public String getSql(){
+		return sql().get();
+	}
 
 	public void initialize(URL location, ResourceBundle resources) {
 	}
 
 	@FXML
-	public void execute(ActionEvent event){
+	public void execute(ActionEvent event) throws UnsupportedDataTypeException, SQLException{
 
-		logic.execute(sql.getValue());
+		ResultSet result = logic.execute(sql.getValue());
+		//addColumn(tableResult,"b");
 
-
-		addColumn(tableResult,"b");
+		for(ColumnInfo column: logic.getColumnInfo()){
+			addColumn(tableResult, column.getName());
+		}
 	}
 
 	@FXML

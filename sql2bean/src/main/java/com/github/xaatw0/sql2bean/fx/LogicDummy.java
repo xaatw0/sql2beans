@@ -7,11 +7,17 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.activation.UnsupportedDataTypeException;
+
 import org.h2.tools.Server;
+
+import com.github.xaatw0.sql2bean.sql.ColumnInfo;
 
 public class LogicDummy implements LogicInterface {
 
 	private ResultSetMetaData metaData;
+
+	private ColumnInfo[]  columnInfos;
 
 	public LogicDummy() {
 		// TODO 自動生成されたコンストラクター・スタブ
@@ -40,10 +46,12 @@ public class LogicDummy implements LogicInterface {
 	        result = statement.executeQuery("SELECT ID,NAME FROM USER ORDER BY ID;");
 			metaData = result.getMetaData();
 
+			columnInfos = ColumnInfo.createColumnInfo(result.getMetaData());
+
 	        conn.close();
 			server.stop();
 
-		}catch(ClassNotFoundException | SQLException e){
+		}catch(ClassNotFoundException | SQLException | UnsupportedDataTypeException e){
 			e.printStackTrace();
 		}
 
@@ -70,6 +78,13 @@ public class LogicDummy implements LogicInterface {
 	public String load(String sqlId) {
 		// TODO 自動生成されたメソッド・スタブ
 		return null;
+	}
+
+
+
+	@Override
+	public ColumnInfo[] getColumnInfo() {
+		return columnInfos;
 	}
 
 }
