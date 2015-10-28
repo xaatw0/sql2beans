@@ -9,8 +9,6 @@ import java.sql.Statement;
 
 import javax.activation.UnsupportedDataTypeException;
 
-import org.h2.tools.Server;
-
 import com.github.xaatw0.sql2bean.sql.ColumnInfo;
 
 public class LogicDummy implements LogicInterface {
@@ -31,9 +29,6 @@ public class LogicDummy implements LogicInterface {
 		ResultSet result = null;
 
 		try{
-			Server server = Server.createTcpServer().start();
-
-			Class.forName("org.h2.Driver");
 	        Connection conn = DriverManager.
 	            getConnection("jdbc:h2:~/test", "sa", "");
 
@@ -49,9 +44,8 @@ public class LogicDummy implements LogicInterface {
 			columnInfos = ColumnInfo.createColumnInfo(result.getMetaData());
 
 	        conn.close();
-			server.stop();
 
-		}catch(ClassNotFoundException | SQLException | UnsupportedDataTypeException e){
+		}catch(SQLException | UnsupportedDataTypeException e){
 			e.printStackTrace();
 		}
 

@@ -1,6 +1,8 @@
 package com.github.xaatw0.sql2bean.fx;
 
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.List;
 
 import javafx.application.Application;
@@ -9,12 +11,19 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+import org.h2.tools.Server;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 
 public class FXMain extends Application {
+
+	/**
+	 * DBサーバー
+	 */
+	Server server;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -46,10 +55,21 @@ public class FXMain extends Application {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
+			server = Server.createTcpServer().start();
+
+			Class.forName("org.h2.Driver");
+	        Connection conn = DriverManager.
+	            getConnection("jdbc:h2:~/test", "sa", "");
+
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
+
+    @Override
+    public void stop() {
+		server.stop();
+    }
 
 	public static void main(String[] args) {
 		launch(args);
