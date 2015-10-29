@@ -1,8 +1,6 @@
 package com.github.xaatw0.sql2bean.fx;
 
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.List;
 
 import javafx.application.Application;
@@ -40,8 +38,6 @@ public class FXMain<T> extends Application {
 			server = Server.createTcpServer().start();
 
 			Class.forName("org.h2.Driver");
-	        Connection conn = DriverManager.
-	            getConnection("jdbc:h2:~/test", "sa", "");
 
 		} catch(Exception e) {
 			e.printStackTrace();

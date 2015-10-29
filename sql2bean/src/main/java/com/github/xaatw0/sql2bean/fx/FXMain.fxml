@@ -6,19 +6,38 @@
 <?import javafx.scene.layout.BorderPane?>
 
 <BorderPane prefHeight="340.0" prefWidth="414.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.xaatw0.sql2bean.fx.FXController">
-   <bottom>
-      <HBox prefHeight="28.0" prefWidth="414.0" BorderPane.alignment="CENTER">
-         <children>
-            <Button id="btnExecute" fx:id="btnExecute" mnemonicParsing="false" onAction="#execute" text="Execute" />
-            <Button fx:id="btnLoad" mnemonicParsing="false" text="Button" />
-            <Button id="btnSave" fx:id="btnSave" mnemonicParsing="false" onAction="#save" text="Save" />
-         </children>
-      </HBox>
-   </bottom>
    <top>
       <TextArea id="txtSql" fx:id="txtSql" prefHeight="200.0" prefWidth="312.0" BorderPane.alignment="CENTER" />
    </top>
    <center>
-      <TableView id="tblResult" fx:id="tableResult" prefHeight="153.0" prefWidth="414.0" BorderPane.alignment="CENTER" />
+      <TableView id="tblResult" fx:id="tblResult" prefHeight="153.0" prefWidth="414.0" BorderPane.alignment="CENTER" />
    </center>
+   <bottom>
+      <VBox maxHeight="-Infinity" maxWidth="1.7976931348623157E308" BorderPane.alignment="BOTTOM_CENTER">
+         <children>
+            <HBox prefHeight="28.0" prefWidth="414.0">
+               <children>
+                  <Button id="btnExecute" fx:id="btnExecute" mnemonicParsing="false" onAction="#execute" text="Execute" />
+                  <Button alignment="CENTER_RIGHT" mnemonicParsing="false" text="Analyze" />
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label text="SQL ID" />
+                  <TextField fx:id="txtSqlId" />
+                  <Button id="btnSave" fx:id="btnSave" mnemonicParsing="false" onAction="#save" text="Save" />
+                  <Button fx:id="btnLoad" mnemonicParsing="false" onAction="#load" text="Load" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </bottom>
+   <right>
+      <TableView prefHeight="89.0" prefWidth="153.0" BorderPane.alignment="CENTER">
+        <columns>
+          <TableColumn prefWidth="75.0" text="Key" />
+          <TableColumn prefWidth="75.0" text="Value" />
+        </columns>
+      </TableView>
+   </right>
 </BorderPane>

@@ -2,6 +2,7 @@ package com.github.xaatw0.sql2bean.fx;
 
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -13,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 
 import javax.activation.UnsupportedDataTypeException;
 
@@ -24,8 +26,10 @@ public class FXController implements Initializable{
 	private LogicInterface logic;
 
 	@FXML private TextArea txtSql;
+	@FXML private TextField txtSqlId;
 
-	@FXML private TableView table;
+	@FXML private TableView tblResult;
+	@FXML private TableView<Map<String, String>> tblArgs;
 
 	@FXML private Button btnExecute;
 	@FXML private Button btnSave;
@@ -50,10 +54,10 @@ public class FXController implements Initializable{
 	@FXML
 	public void execute(ActionEvent event) throws UnsupportedDataTypeException, SQLException{
 
-		table.setItems(logic.execute(sql.getValue()));
+		tblResult.setItems(logic.execute(sql.getValue()));
 
 		for(ColumnInfo column: logic.getColumnInfo()){
-			addColumn(table, column.getCamelName());
+			addColumn(tblResult, column.getCamelName());
 		}
 	}
 
@@ -76,5 +80,5 @@ public class FXController implements Initializable{
         column.setMinWidth(130);
         logic.setCell(column, columnName);
         table.getColumns().add(column);
-      }
+    }
 }
