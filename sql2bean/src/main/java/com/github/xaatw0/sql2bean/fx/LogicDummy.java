@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,12 +26,10 @@ public class LogicDummy implements LogicInterface<DummyObject> {
 		// TODO 自動生成されたコンストラクター・スタブ
 	}
 
-
-
 	@Override
 	public ObservableList<DummyObject> execute(String sql) {
 
-		List<DummyObject> data = null;
+		ObservableList<DummyObject> data = FXCollections.observableArrayList();
 
 		try{
 	        Connection conn = DriverManager.
@@ -51,8 +47,6 @@ public class LogicDummy implements LogicInterface<DummyObject> {
 
 			columnInfos = ColumnInfo.createColumnInfo(result.getMetaData());
 
-			data = new ArrayList<DummyObject>();
-
 			while(result.next()){
 				data.add(new DummyObject(result.getInt("ID"), result.getString("NAME")));
 			}
@@ -63,12 +57,7 @@ public class LogicDummy implements LogicInterface<DummyObject> {
 			e.printStackTrace();
 		}
 
-
-		ObservableList<DummyObject> tableRecord = FXCollections.observableArrayList();
-		tableRecord.addAll(data);
-
-		return tableRecord;
-
+		return data;
 	}
 
 	@Override

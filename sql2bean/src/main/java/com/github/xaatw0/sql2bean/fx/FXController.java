@@ -25,7 +25,7 @@ public class FXController implements Initializable{
 
 	@FXML private TextArea txtSql;
 
-	@FXML private TableView tableResult;
+	@FXML private TableView table;
 
 	@FXML private Button btnExecute;
 	@FXML private Button btnSave;
@@ -50,10 +50,10 @@ public class FXController implements Initializable{
 	@FXML
 	public void execute(ActionEvent event) throws UnsupportedDataTypeException, SQLException{
 
-		tableResult.setItems(logic.execute(sql.getValue()));
+		table.setItems(logic.execute(sql.getValue()));
 
 		for(ColumnInfo column: logic.getColumnInfo()){
-			addColumn(tableResult, column.getCamelName());
+			addColumn(table, column.getCamelName());
 		}
 	}
 
@@ -70,9 +70,9 @@ public class FXController implements Initializable{
      * @param table
      * @param columnName
      */
-    private void addColumn(TableView<DummyObject> table, String columnName) {
+    private void addColumn(TableView table, String columnName) {
 
-        TableColumn<DummyObject, String> column = new TableColumn<>(columnName);
+        TableColumn column = new TableColumn(columnName);
         column.setMinWidth(130);
         logic.setCell(column, columnName);
         table.getColumns().add(column);
