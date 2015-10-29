@@ -4,6 +4,7 @@ import java.sql.ResultSetMetaData;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
+import beans.SQLKeyValue;
 
 import com.github.xaatw0.sql2bean.sql.ColumnInfo;
 import com.google.inject.ImplementedBy;
@@ -44,6 +45,8 @@ public interface LogicInterface<T> {
 	 * @return 保存したSQLの内容
 	 */
 	String load(String sqlId);
+
+	void analize(String sql,ObservableList<SQLKeyValue> args);
 
 	void setCell(TableColumn<T, String> column, String columnName);
 }

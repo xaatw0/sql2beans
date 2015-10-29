@@ -7,6 +7,8 @@ import java.util.ResourceBundle;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -29,10 +31,14 @@ public class FXController implements Initializable{
 	@FXML private TextField txtSqlId;
 
 	@FXML private TableView tblResult;
+
+
 	@FXML private TableView<Map<String, String>> tblArgs;
+	ObservableList<DummyObject> args;
 
 	@FXML private Button btnExecute;
 	@FXML private Button btnSave;
+
 
 	private StringProperty sql = new SimpleStringProperty(this, "sql");
 	public StringProperty sql(){
@@ -49,6 +55,7 @@ public class FXController implements Initializable{
 
 	public void initialize(URL location, ResourceBundle resources) {
 		logic = new LogicDummy();
+		args = FXCollections.observableArrayList();
 	}
 
 	@FXML

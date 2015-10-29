@@ -4,6 +4,7 @@ import java.sql.ResultSetMetaData;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
+import beans.SQLKeyValue;
 
 import com.github.xaatw0.sql2bean.sql.ColumnInfo;
 
@@ -42,6 +43,12 @@ public class LogicImplement<T> implements LogicInterface<T> {
 
 	@Override
 	public void setCell(TableColumn<T, String> column, String columnName) {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
+	@Override
+	public void analize(String sql, ObservableList<SQLKeyValue> args) {
 		// TODO 自動生成されたメソッド・スタブ
 
 	}

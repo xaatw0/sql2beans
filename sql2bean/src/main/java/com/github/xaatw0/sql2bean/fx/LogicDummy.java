@@ -14,6 +14,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import javax.activation.UnsupportedDataTypeException;
 
+import beans.SQLKeyValue;
+
 import com.github.xaatw0.sql2bean.sql.ColumnInfo;
 
 public class LogicDummy implements LogicInterface<DummyObject> {
@@ -92,6 +94,12 @@ public class LogicDummy implements LogicInterface<DummyObject> {
 	@Override
 	public void setCell(TableColumn<DummyObject, String> column, String columnName) {
 		column.setCellValueFactory(new PropertyValueFactory<DummyObject,String>(columnName));
+	}
+
+	@Override
+	public void analize(String sql, ObservableList<SQLKeyValue> args) {
+		// TODO 自動生成されたメソッド・スタブ
+
 	}
 
 }
