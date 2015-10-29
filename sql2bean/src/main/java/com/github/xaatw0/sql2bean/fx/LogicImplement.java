@@ -1,15 +1,17 @@
 package com.github.xaatw0.sql2bean.fx;
 
-import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+
+import javafx.collections.ObservableList;
+import javafx.scene.control.TableColumn;
 
 import com.github.xaatw0.sql2bean.sql.ColumnInfo;
 
-public class LogicImplement implements LogicInterface {
+public class LogicImplement<T> implements LogicInterface<T> {
 
 
 	@Override
-	public ResultSet execute(String sql) {
+	public ObservableList<T> execute(String sql) {
 		// TODO 自動生成されたメソッド・スタブ
 		return null;
 	}
@@ -37,6 +39,13 @@ public class LogicImplement implements LogicInterface {
 		// TODO 自動生成されたメソッド・スタブ
 		return null;
 	}
+
+	@Override
+	public void setCell(TableColumn<T, String> column, String columnName) {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
 
 
 }

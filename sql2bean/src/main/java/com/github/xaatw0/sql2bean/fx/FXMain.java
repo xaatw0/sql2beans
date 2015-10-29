@@ -13,12 +13,8 @@ import javafx.stage.Stage;
 
 import org.h2.tools.Server;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 
-
-public class FXMain extends Application {
+public class FXMain<T> extends Application {
 
 	/**
 	 * DBサーバー
@@ -37,24 +33,10 @@ public class FXMain extends Application {
 			// メイン文の引数を取得する
 			final List<String> args = getParameters().getRaw();
 
-			// DIの注入の定義
-			Injector injector = Guice.createInjector(new AbstractModule() {
-
-				@Override
-				protected void configure() {
-
-					if (0 < args.size() && args.get(0).equals("TEST")){
-						bind(LogicInterface.class).to(LogicDummy.class);
-					}
-				}
-			});
-
-			// コントロールを取得し、DIの注入を実施する
-			injector.injectMembers(loader.getController());
-
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
+			// データベースを起動
 			server = Server.createTcpServer().start();
 
 			Class.forName("org.h2.Driver");

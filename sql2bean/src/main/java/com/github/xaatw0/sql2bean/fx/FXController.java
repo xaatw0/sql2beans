@@ -1,7 +1,6 @@
 package com.github.xaatw0.sql2bean.fx;
 
 import java.net.URL;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
@@ -18,16 +17,16 @@ import javafx.scene.control.TextArea;
 import javax.activation.UnsupportedDataTypeException;
 
 import com.github.xaatw0.sql2bean.sql.ColumnInfo;
-import com.google.inject.Inject;
 
 public class FXController implements Initializable{
 
 
-	@Inject
 	private LogicInterface logic;
 
 	@FXML private TextArea txtSql;
-	@FXML private TableView<ColumnInfo> tableResult;
+
+	@FXML private TableView tableResult;
+
 	@FXML private Button btnExecute;
 	@FXML private Button btnSave;
 
@@ -45,16 +44,16 @@ public class FXController implements Initializable{
 	}
 
 	public void initialize(URL location, ResourceBundle resources) {
+		logic = new LogicDummy();
 	}
 
 	@FXML
 	public void execute(ActionEvent event) throws UnsupportedDataTypeException, SQLException{
 
-		ResultSet result = logic.execute(sql.getValue());
-		//addColumn(tableResult,"b");
+		tableResult.setItems(logic.execute(sql.getValue()));
 
 		for(ColumnInfo column: logic.getColumnInfo()){
-			addColumn(tableResult, column.getName());
+			addColumn(tableResult, column.getCamelName());
 		}
 	}
 
@@ -71,12 +70,11 @@ public class FXController implements Initializable{
      * @param table
      * @param columnName
      */
-    private void addColumn(TableView<ColumnInfo> table, String columnName) {
+    private void addColumn(TableView<DummyObject> table, String columnName) {
 
-        TableColumn<ColumnInfo, String> column = new TableColumn<>(columnName);
-        //column.setCellValueFactory(new MapValueFactory<ColumnInfo>(columnName));
+        TableColumn<DummyObject, String> column = new TableColumn<>(columnName);
         column.setMinWidth(130);
-        // column.setCellFactory(cellFactoryForMap);
+        logic.setCell(column, columnName);
         table.getColumns().add(column);
       }
 }

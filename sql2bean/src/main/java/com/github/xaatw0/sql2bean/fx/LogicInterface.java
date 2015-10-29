@@ -1,20 +1,22 @@
 package com.github.xaatw0.sql2bean.fx;
 
-import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+
+import javafx.collections.ObservableList;
+import javafx.scene.control.TableColumn;
 
 import com.github.xaatw0.sql2bean.sql.ColumnInfo;
 import com.google.inject.ImplementedBy;
 
 @ImplementedBy(LogicImplement.class)
-public interface LogicInterface {
+public interface LogicInterface<T> {
 
 	/**
 	 * SQLを実施し、テーブルに表示する結果を取得する
 	 * @param sql 実施するSQL
 	 * @return SQLの結果
 	 */
-	ResultSet execute(String sql);
+	ObservableList<T> execute(String sql);
 
 
 	/**
@@ -42,4 +44,6 @@ public interface LogicInterface {
 	 * @return 保存したSQLの内容
 	 */
 	String load(String sqlId);
+
+	void setCell(TableColumn<T, String> column, String columnName);
 }
