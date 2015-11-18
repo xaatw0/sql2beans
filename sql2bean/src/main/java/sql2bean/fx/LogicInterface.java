@@ -1,12 +1,12 @@
-package com.github.xaatw0.sql2bean.fx;
+package sql2bean.fx;
 
 import java.sql.ResultSetMetaData;
 
+import sql2bean.beans.SQLKeyValue;
+import sql2bean.sql.ColumnInfo;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
-import beans.SQLKeyValue;
 
-import com.github.xaatw0.sql2bean.sql.ColumnInfo;
 import com.google.inject.ImplementedBy;
 
 @ImplementedBy(LogicImplement.class)

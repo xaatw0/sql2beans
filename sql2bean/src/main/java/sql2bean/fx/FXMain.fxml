@@ -18,7 +18,7 @@
             <HBox prefHeight="28.0" prefWidth="414.0">
                <children>
                   <Button id="btnExecute" fx:id="btnExecute" mnemonicParsing="false" onAction="#execute" text="Execute" />
-                  <Button alignment="CENTER_RIGHT" mnemonicParsing="false" text="Analyze" />
+                  <Button fx:id="btnAnalyze" alignment="CENTER_RIGHT" mnemonicParsing="false" text="Analyze" />
                </children>
             </HBox>
             <HBox>
@@ -33,7 +33,7 @@
       </VBox>
    </bottom>
    <right>
-      <TableView prefHeight="89.0" prefWidth="153.0" BorderPane.alignment="CENTER">
+      <TableView fx:id="tblArgs" prefHeight="89.0" prefWidth="153.0" BorderPane.alignment="CENTER">
         <columns>
           <TableColumn prefWidth="75.0" text="Key" />
           <TableColumn prefWidth="75.0" text="Value" />

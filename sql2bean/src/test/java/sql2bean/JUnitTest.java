@@ -1,4 +1,4 @@
-package com.github.xaatw0.sql2bean;
+package sql2bean;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;

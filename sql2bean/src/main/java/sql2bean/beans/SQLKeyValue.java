@@ -1,4 +1,4 @@
-package beans;
+package sql2bean.beans;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

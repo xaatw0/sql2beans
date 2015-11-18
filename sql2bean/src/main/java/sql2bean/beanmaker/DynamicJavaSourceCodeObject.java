@@ -1,4 +1,4 @@
-package com.github.xaatw0.sql2bean.beanmaker;
+package sql2bean.beanmaker;
 
 import java.io.IOException;
 import java.net.URI;
