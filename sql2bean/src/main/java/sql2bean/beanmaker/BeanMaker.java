@@ -1,4 +1,4 @@
-package com.github.xaatw0.sql2bean.beanmaker;
+package sql2bean.beanmaker;
 
 import java.io.StringWriter;
 import java.util.Arrays;
@@ -15,7 +15,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
-import com.github.xaatw0.sql2bean.sql.ColumnInfo;
+import sql2bean.sql.ColumnInfo;
 
 public class BeanMaker {
 
@@ -97,5 +97,4 @@ public class BeanMaker {
 
 		compile(packageName +"." + className , write(dataType, packageName, className));
 	}
-
 }

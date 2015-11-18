@@ -1,4 +1,4 @@
-package com.github.xaatw0.sql2bean;
+package sql2bean;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -23,7 +23,7 @@ public class H2Test {
 
 		Class.forName("org.h2.Driver");
         Connection conn = DriverManager.
-            getConnection("jdbc:h2:~/test", "sa", "");
+        getConnection("jdbc:h2:~/test", "sa", "");
 
         Statement statement = conn.createStatement();
         statement.execute("DROP TABLE IF EXISTS USER;");
@@ -66,7 +66,7 @@ public class H2Test {
             getConnection("jdbc:h2:~/test", "sa", "");
 
         Statement statement = conn.createStatement();
-        statement.execute("DROP TABLE USER;");
+        statement.execute("DROP TABLE  IF EXISTS USER;");
         statement.execute("CREATE TABLE USER (ID INT, NAME VARCHAR(50));");
 
         ResultSet resultSet = statement.executeQuery("SELECT ID,NAME FROM USER ORDER BY ID;");

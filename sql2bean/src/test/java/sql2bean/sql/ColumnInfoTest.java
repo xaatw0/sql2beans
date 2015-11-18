@@ -1,4 +1,4 @@
-package com.github.xaatw0.sql2bean.sql;
+package sql2bean.sql;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -14,6 +14,9 @@ import javax.activation.UnsupportedDataTypeException;
 
 import org.h2.tools.Server;
 import org.junit.Test;
+
+import sql2bean.sql.ColumnInfo;
+import sql2bean.sql.DataType;
 
 public class ColumnInfoTest {
 
