@@ -1,4 +1,4 @@
-package com.github.xaatw0.sql2bean.fx;
+package sql2bean.fx;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -20,25 +20,37 @@ import javafx.scene.control.TextField;
 
 import javax.activation.UnsupportedDataTypeException;
 
-import com.github.xaatw0.sql2bean.sql.ColumnInfo;
+import sql2bean.sql.ColumnInfo;
 
 public class FXController implements Initializable{
 
 
 	private LogicInterface logic;
 
+	/** SQLを入力するテキストエリア */
 	@FXML private TextArea txtSql;
+
+	/** SQLのIDを入力するテキストボックス */
 	@FXML private TextField txtSqlId;
 
+	/** SQLの実施結果を表示するテーブル */
 	@FXML private TableView tblResult;
 
-
+	/** SQLの引数を表示するテーブル*/
 	@FXML private TableView<Map<String, String>> tblArgs;
 	ObservableList<DummyObject> args;
 
+	/** SQLを解析するボタン */
+	@FXML private Button btnAnalyze;
+
+	/** SQLを実行するボタン */
 	@FXML private Button btnExecute;
+
+	/** SQLを保存するボタン */
 	@FXML private Button btnSave;
 
+	/** SQLを呼び出すボタン */
+	@FXML private Button btnLoad;
 
 	private StringProperty sql = new SimpleStringProperty(this, "sql");
 	public StringProperty sql(){

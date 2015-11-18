@@ -1,4 +1,4 @@
-package com.github.xaatw0.sql2bean.fx;
+package sql2bean.fx;
 
 
 import java.util.List;

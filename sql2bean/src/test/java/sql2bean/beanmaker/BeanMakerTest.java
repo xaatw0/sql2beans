@@ -1,4 +1,4 @@
-package com.github.xaatw0.sql2bean.beanmaker;
+package sql2bean.beanmaker;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -10,8 +10,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.github.xaatw0.sql2bean.sql.ColumnInfo;
-import com.github.xaatw0.sql2bean.sql.DataType;
+import sql2bean.beanmaker.BeanMaker;
+import sql2bean.sql.ColumnInfo;
+import sql2bean.sql.DataType;
 
 public class BeanMakerTest {
 
