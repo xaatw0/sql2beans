@@ -1,4 +1,4 @@
-package com.github.xaatw0.sql2bean.fx;
+package sql2bean.fx;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,9 +14,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import javax.activation.UnsupportedDataTypeException;
 
-import beans.SQLKeyValue;
-
-import com.github.xaatw0.sql2bean.sql.ColumnInfo;
+import sql2bean.beans.SQLKeyValue;
+import sql2bean.sql.ColumnInfo;
 
 public class LogicDummy implements LogicInterface<DummyObject> {
 

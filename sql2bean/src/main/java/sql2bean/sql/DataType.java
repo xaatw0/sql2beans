@@ -1,4 +1,4 @@
-package com.github.xaatw0.sql2bean.sql;
+package sql2bean.sql;
 
 import java.sql.Types;
 import java.util.Arrays;
