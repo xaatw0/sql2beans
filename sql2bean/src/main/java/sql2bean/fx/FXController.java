@@ -44,6 +44,9 @@ public class FXController implements Initializable{
 	/** SQLの引数を表示するテーブル*/
 	@FXML private TableView<SQLKeyValue> tblArgs;
 
+	/** SQLの引数を表示するテーブルのデータ*/
+	private ObservableList<SQLKeyValue> lstArgs = FXCollections.observableArrayList();
+
 	/** SQLの引数を表示するテーブルのキーの列*/
 	@FXML private TableColumn<SQLKeyValue,String> colKey;
 
