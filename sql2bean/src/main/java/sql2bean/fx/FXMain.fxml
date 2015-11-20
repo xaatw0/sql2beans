@@ -35,8 +35,8 @@
    <right>
       <TableView fx:id="tblArgs" prefHeight="89.0" prefWidth="153.0" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn prefWidth="75.0" text="Key" />
-          <TableColumn prefWidth="75.0" text="Value" />
+          <TableColumn id="key" fx:id="colKey" prefWidth="75.0" text="Key" />
+          <TableColumn id="value" fx:id="colValue" prefWidth="75.0" text="Value" />
         </columns>
       </TableView>
    </right>
