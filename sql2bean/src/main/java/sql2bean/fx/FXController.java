@@ -26,6 +26,7 @@ import javax.activation.UnsupportedDataTypeException;
 
 import sql2bean.beans.SQLKeyValue;
 import sql2bean.sql.ColumnInfo;
+import sql2bean.sql.SQLAnalyzer;
 
 public class FXController implements Initializable{
 
@@ -115,6 +116,14 @@ public class FXController implements Initializable{
 
 	@FXML
 	public void analyze(ActionEvent event){
+		lstArgs.clear();
+
+		for (String key: new SQLAnalyzer().analyze(getSql())){
+
+			SQLKeyValue row = new SQLKeyValue();
+			row.setKey(key);
+			lstArgs.add(row);
+		}
 	}
 
 	@FXML
