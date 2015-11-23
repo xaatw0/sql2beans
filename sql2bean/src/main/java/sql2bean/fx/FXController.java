@@ -98,6 +98,9 @@ public class FXController implements Initializable{
 				return new TextFieldTableCell<SQLKeyValue, String>(new DefaultStringConverter());
 			}
 		});
+
+		txtSql.textProperty().bind(sql);
+
 	}
 
 	@FXML
