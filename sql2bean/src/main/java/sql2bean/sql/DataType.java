@@ -4,6 +4,8 @@ import java.sql.Types;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
+import javafx.util.StringConverter;
+
 /**
  * DBから取得したデータの型のラッパー
  */
@@ -45,6 +47,19 @@ public enum DataType {
 
 	public IntStream getValueStream(){
 		return Arrays.stream(types);
+	}
+
+	public static class StringDataTypeConverter extends StringConverter<DataType>{
+
+		@Override
+		public java.lang.String toString(DataType object) {
+			return object.name();
+		}
+
+		@Override
+		public DataType fromString(java.lang.String string) {
+			return Arrays.stream(DataType.values()).filter(p->string.equals(p.name())).findAny().get();
+		}
 	}
 
 }

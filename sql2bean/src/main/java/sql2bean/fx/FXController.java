@@ -2,7 +2,8 @@ package sql2bean.fx;
 
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.Map;
+import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 
@@ -25,6 +27,7 @@ import javax.activation.UnsupportedDataTypeException;
 
 import sql2bean.beans.SQLKeyValue;
 import sql2bean.sql.ColumnInfo;
+import sql2bean.sql.DataType;
 import sql2bean.sql.SQLAnalyzer;
 
 public class FXController implements Initializable{
@@ -46,6 +49,9 @@ public class FXController implements Initializable{
 
 	/** SQLの引数を表示するテーブルのキーの列*/
 	@FXML private TableColumn<SQLKeyValue,String> colKey;
+
+	/** SQLの引数を表示するテーブルの値の列*/
+	@FXML private TableColumn<SQLKeyValue,DataType> colType;
 
 	/** SQLの引数を表示するテーブルの値の列*/
 	@FXML private TableColumn<SQLKeyValue,String> colValue;
@@ -91,6 +97,11 @@ public class FXController implements Initializable{
 		// 引数を表示するテーブルの設定
 		colKey.setCellValueFactory(new PropertyValueFactory<>("key"));
 
+		// Typeはコンボボックスにする
+		colType.setCellValueFactory(new PropertyValueFactory<>("type"));
+		colType.setCellFactory(ComboBoxTableCell.forTableColumn(
+				new DataType.StringDataTypeConverter(), FXCollections.observableArrayList(DataType.values())));
+
 		// Valueは編集可能なセルにする
 		colValue.setCellValueFactory(new PropertyValueFactory<>("value"));
 		colValue.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -112,12 +123,15 @@ public class FXController implements Initializable{
 	public void analyze(ActionEvent event){
 
 		// 現在の設定値を記録するしてから、表を初期化する
-		Map<String,String> map = args.stream().collect( Collectors.toMap(SQLKeyValue::getKey, SQLKeyValue::getValue));
+		List<SQLKeyValue> priviousData = args.stream().collect(Collectors.toList());
 		args.clear();
 
 		analyzer.analyze(sql.get()).stream()
-		.map(key-> new SQLKeyValue(key, map.get(key)))
-		.forEach(args::add);
+		.map(key ->
+		{
+			Optional<SQLKeyValue> data = priviousData.stream().filter(p-> p.isSameKey(key)).findFirst();
+			return data.isPresent() ? data.get(): new SQLKeyValue(key);
+		}).forEach(args::add);
 	}
 
 	@FXML

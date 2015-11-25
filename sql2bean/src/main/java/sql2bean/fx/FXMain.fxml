@@ -5,12 +5,12 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane prefHeight="340.0" prefWidth="414.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sql2bean.fx.FXController">
+<BorderPane prefHeight="343.0" prefWidth="591.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sql2bean.fx.FXController">
    <top>
-      <TextArea id="txtSql" fx:id="txtSql" prefHeight="200.0" prefWidth="312.0" BorderPane.alignment="CENTER" />
+      <TextArea id="txtSql" fx:id="txtSql" prefHeight="200.0" prefWidth="473.0" BorderPane.alignment="CENTER" />
    </top>
    <center>
-      <TableView id="tblResult" fx:id="tblResult" prefHeight="153.0" prefWidth="414.0" BorderPane.alignment="CENTER" />
+      <TableView id="tblResult" fx:id="tblResult" prefHeight="89.0" prefWidth="388.0" BorderPane.alignment="CENTER" />
    </center>
    <bottom>
       <VBox maxHeight="-Infinity" maxWidth="1.7976931348623157E308" BorderPane.alignment="BOTTOM_CENTER">
@@ -33,10 +33,11 @@
       </VBox>
    </bottom>
    <right>
-      <TableView fx:id="tblArgs" prefHeight="89.0" prefWidth="153.0" BorderPane.alignment="CENTER">
+      <TableView fx:id="tblArgs" prefHeight="92.0" prefWidth="237.0" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn id="key" fx:id="colKey" prefWidth="75.0" text="Key" />
-          <TableColumn id="value" fx:id="colValue" prefWidth="75.0" text="Value" />
+          <TableColumn id="key" fx:id="colKey" prefWidth="86.0" text="Key" />
+            <TableColumn fx:id="colType" prefWidth="58.0" text="Type" />
+          <TableColumn id="value" fx:id="colValue" prefWidth="90.0" text="Value" />
         </columns>
       </TableView>
    </right>

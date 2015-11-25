@@ -8,6 +8,10 @@ import java.util.regex.Pattern;
 public class SQLAnalyzer {
 	private Pattern ptnArgument = Pattern.compile("\\$\\{([^)]*?)\\}");
 
+	private String rawSql = null;
+
+	private String preparedSql = null;
+
 	public List<String> analyze(String sql){
 
 		Matcher matcher = ptnArgument.matcher(sql);
