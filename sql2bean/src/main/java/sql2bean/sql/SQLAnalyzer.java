@@ -14,7 +14,12 @@ public class SQLAnalyzer {
 
 		List<String> result = new ArrayList<>();
 		while(matcher.find()){
-			result.add(matcher.group(1));
+
+			String word = matcher.group(1);
+
+			if(! result.contains(word)){
+				result.add(word);
+			}
 		}
 
 		return result;
