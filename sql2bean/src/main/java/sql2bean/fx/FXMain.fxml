@@ -18,7 +18,7 @@
             <HBox prefHeight="28.0" prefWidth="414.0">
                <children>
                   <Button id="btnExecute" fx:id="btnExecute" mnemonicParsing="false" onAction="#execute" text="Execute" />
-                  <Button fx:id="btnAnalyze" alignment="CENTER_RIGHT" mnemonicParsing="false" text="Analyze" />
+                  <Button fx:id="btnAnalyze" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#analyze" text="Analyze" />
                </children>
             </HBox>
             <HBox>

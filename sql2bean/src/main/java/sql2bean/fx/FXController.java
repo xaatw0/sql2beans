@@ -9,11 +9,13 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -45,9 +47,6 @@ public class FXController implements Initializable{
 	/** SQLの引数を表示するテーブル*/
 	@FXML private TableView<SQLKeyValue> tblArgs;
 
-	/** SQLの引数を表示するテーブルのデータ*/
-	private ObservableList<SQLKeyValue> lstArgs = FXCollections.observableArrayList();
-
 	/** SQLの引数を表示するテーブルのキーの列*/
 	@FXML private TableColumn<SQLKeyValue,String> colKey;
 
@@ -69,7 +68,7 @@ public class FXController implements Initializable{
 	/** SQLを呼び出すボタン */
 	@FXML private Button btnLoad;
 
-	private StringProperty sql = new SimpleStringProperty(this, "sql");
+	private StringProperty sql = new SimpleStringProperty(txtSql, "");
 	public StringProperty sql(){
 		return sql;
 	}
@@ -85,6 +84,7 @@ public class FXController implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 		logic = new LogicDummy();
 		args = FXCollections.observableArrayList();
+		tblArgs.setItems(args);
 
 		// 編集可能なテーブルにする
 		tblArgs.setEditable(true);
@@ -97,6 +97,13 @@ public class FXController implements Initializable{
 			@Override
 			public TableCell<SQLKeyValue, String> call(TableColumn<SQLKeyValue, String> arg0) {
 				return new TextFieldTableCell<SQLKeyValue, String>(new DefaultStringConverter());
+			}
+		});
+
+		colValue.setOnEditCommit(new EventHandler<CellEditEvent<SQLKeyValue, String>>() {
+			@Override
+			public void handle(CellEditEvent<SQLKeyValue, String> t) {
+				//((SQLKeyValue) t.getTableView().getItems().get(t.getTablePosition().getRow())).setMemo(t.getNewValue());
 			}
 		});
 
@@ -116,13 +123,13 @@ public class FXController implements Initializable{
 
 	@FXML
 	public void analyze(ActionEvent event){
-		lstArgs.clear();
+		args.clear();
 
-		for (String key: new SQLAnalyzer().analyze(getSql())){
+		for (String key: new SQLAnalyzer().analyze(txtSql.getText())){
 
 			SQLKeyValue row = new SQLKeyValue();
 			row.setKey(key);
-			lstArgs.add(row);
+			args.add(row);
 		}
 	}
 
