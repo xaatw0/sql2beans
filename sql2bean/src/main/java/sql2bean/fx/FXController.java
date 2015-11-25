@@ -2,27 +2,24 @@ package sql2bean.fx;
 
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.util.Callback;
-import javafx.util.converter.DefaultStringConverter;
 
 import javax.activation.UnsupportedDataTypeException;
 
@@ -55,6 +52,8 @@ public class FXController implements Initializable{
 
 	/** SQLの引数を表示するテーブルのリスト*/
 	private ObservableList<SQLKeyValue> args;
+
+	private SQLAnalyzer analyzer = new SQLAnalyzer();
 
 	/** SQLを解析するボタン */
 	@FXML private Button btnAnalyze;
@@ -93,22 +92,10 @@ public class FXController implements Initializable{
 		colKey.setCellValueFactory(new PropertyValueFactory<>("key"));
 
 		// Valueは編集可能なセルにする
-		colValue.setCellFactory(new Callback<TableColumn<SQLKeyValue,String>, TableCell<SQLKeyValue,String>>() {
-			@Override
-			public TableCell<SQLKeyValue, String> call(TableColumn<SQLKeyValue, String> arg0) {
-				return new TextFieldTableCell<SQLKeyValue, String>(new DefaultStringConverter());
-			}
-		});
+		colValue.setCellValueFactory(new PropertyValueFactory<>("value"));
+		colValue.setCellFactory(TextFieldTableCell.forTableColumn());
 
-		colValue.setOnEditCommit(new EventHandler<CellEditEvent<SQLKeyValue, String>>() {
-			@Override
-			public void handle(CellEditEvent<SQLKeyValue, String> t) {
-				//((SQLKeyValue) t.getTableView().getItems().get(t.getTablePosition().getRow())).setMemo(t.getNewValue());
-			}
-		});
-
-		txtSql.textProperty().bind(sql);
-
+		sql().bind(txtSql.textProperty());
 	}
 
 	@FXML
@@ -123,14 +110,14 @@ public class FXController implements Initializable{
 
 	@FXML
 	public void analyze(ActionEvent event){
+
+		// 現在の設定値を記録するしてから、表を初期化する
+		Map<String,String> map = args.stream().collect( Collectors.toMap(SQLKeyValue::getKey, SQLKeyValue::getValue));
 		args.clear();
 
-		for (String key: new SQLAnalyzer().analyze(sql.get())){
-
-			SQLKeyValue row = new SQLKeyValue();
-			row.setKey(key);
-			args.add(row);
-		}
+		analyzer.analyze(sql.get()).stream()
+		.map(key-> new SQLKeyValue(key, map.get(key)))
+		.forEach(args::add);
 	}
 
 	@FXML
