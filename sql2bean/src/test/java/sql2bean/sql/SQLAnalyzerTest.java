@@ -60,4 +60,12 @@ public class SQLAnalyzerTest {
 		assertThat(result.get(1), is("NAME"));
 	}
 
+	@Test
+	public void analyze_重複() {
+
+		List<String> result = target.analyze("select * from test where id = ${ID} and name = ${NAME} and id2 = ${ID}");
+		assertThat(result.size(), is(2));
+		assertThat(result.get(0), is("ID"));
+		assertThat(result.get(1), is("NAME"));
+	}
 }
