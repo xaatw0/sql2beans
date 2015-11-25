@@ -125,7 +125,7 @@ public class FXController implements Initializable{
 	public void analyze(ActionEvent event){
 		args.clear();
 
-		for (String key: new SQLAnalyzer().analyze(txtSql.getText())){
+		for (String key: new SQLAnalyzer().analyze(sql.get())){
 
 			SQLKeyValue row = new SQLKeyValue();
 			row.setKey(key);
