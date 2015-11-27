@@ -3,7 +3,6 @@ package sql2bean.fx;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -126,12 +125,8 @@ public class FXController implements Initializable{
 		List<SQLKeyValue> priviousData = args.stream().collect(Collectors.toList());
 		args.clear();
 
-		analyzer.analyze(sql.get()).stream()
-		.map(key ->
-		{
-			Optional<SQLKeyValue> data = priviousData.stream().filter(p-> p.isSameKey(key)).findFirst();
-			return data.isPresent() ? data.get(): new SQLKeyValue(key);
-		}).forEach(args::add);
+		args.addAll(analyzer.analyze(sql.get()));
+		analyzer.copyOldData(priviousData);
 	}
 
 	@FXML

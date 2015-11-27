@@ -3,6 +3,7 @@ package sql2bean.sql;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -89,4 +90,31 @@ public class SQLAnalyzerTest {
 		arg2.addParameter(2);
 		assertThat(result.get(1), is(arg2));
 	}
+
+	@Test
+	public void copyOldData(){
+		List<SQLKeyValue> oldData = new ArrayList<>();
+		SQLKeyValue arg1 = new SQLKeyValue("ID");
+		arg1.setType(DataType.Integer);
+		arg1.setValue("test");
+		arg1.addParameter(1);
+		oldData.add(arg1);
+
+		SQLKeyValue arg2 = new SQLKeyValue("NAME");
+		arg2.addParameter(2);
+		oldData.add(arg2);
+
+		List<SQLKeyValue> newData = target.analyze("select * from test where name = ${NAME2} and id = ${ID}");
+		target.copyOldData(oldData);
+
+		assertThat(newData.size(), is(2));
+		SQLKeyValue result1 = newData.get(1);
+		assertThat(result1.getKey(), is("ID"));
+		assertThat(result1.getType(), is(DataType.Integer));
+		assertThat(result1.getValue(), is("test"));
+		assertThat(result1.getParamNos().get(0), is(2));
+
+		assertThat(newData.get(0).getKey(), is("NAME2"));
+	}
+
 }
