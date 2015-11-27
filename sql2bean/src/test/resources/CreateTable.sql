@@ -1,5 +1,4 @@
-CREATE TABLE TODO_USER (
- ID char not null primary key,
- NAME char not null,
- PASSWORD char not null
+CREATE TABLE SqlData (
+ ID VARCHAR(20) PRIMARY KEY,
+ STATEMENT VARCHAR(500) not null
 )
