@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 import org.junit.Before;
 import org.junit.Test;
 
+import sql2bean.beans.SQLKeyValue;
+
 public class SQLAnalyzerTest {
 
 	SQLAnalyzer target;
@@ -46,26 +48,45 @@ public class SQLAnalyzerTest {
 	@Test
 	public void analyze_simple() {
 
-		List<String> result = target.analyze("${ID}");
+		List<SQLKeyValue> result = target.analyze("${ID}");
 		assertThat(result.size(), is(1));
-		assertThat(result.get(0), is("ID"));
+
+		SQLKeyValue key = new SQLKeyValue("ID");
+		key.addParameter(1);
+
+		assertThat(result.get(0), is(key));
 	}
 
 	@Test
 	public void analyze() {
 
-		List<String> result = target.analyze("select * from test where id = ${ID} and name = ${NAME}");
+		List<SQLKeyValue> result = target.analyze("select * from test where id = ${ID} and name = ${NAME}");
 		assertThat(result.size(), is(2));
-		assertThat(result.get(0), is("ID"));
-		assertThat(result.get(1), is("NAME"));
+
+		SQLKeyValue arg1 = new SQLKeyValue("ID");
+		arg1.addParameter(1);
+		assertThat(result.get(0), is(arg1));
+
+		SQLKeyValue arg2 = new SQLKeyValue("NAME");
+		arg2.addParameter(2);
+		assertThat(result.get(1), is(arg2));
+
+		assertThat(target.getPreparedSql(), is("select * from test where id = ? and name = ?"));
 	}
 
 	@Test
 	public void analyze_重複() {
 
-		List<String> result = target.analyze("select * from test where id = ${ID} and name = ${NAME} and id2 = ${ID}");
+		List<SQLKeyValue> result = target.analyze("select * from test where id = ${ID} and name = ${NAME} and id2 = ${ID}");
 		assertThat(result.size(), is(2));
-		assertThat(result.get(0), is("ID"));
-		assertThat(result.get(1), is("NAME"));
+
+		SQLKeyValue arg1 = new SQLKeyValue("ID");
+		arg1.addParameter(1);
+		arg1.addParameter(3);
+		assertThat(result.get(0), is(arg1));
+
+		SQLKeyValue arg2 = new SQLKeyValue("NAME");
+		arg2.addParameter(2);
+		assertThat(result.get(1), is(arg2));
 	}
 }
