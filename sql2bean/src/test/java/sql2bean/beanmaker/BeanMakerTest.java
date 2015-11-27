@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import sql2bean.beanmaker.BeanMaker;
 import sql2bean.sql.ColumnInfo;
 import sql2bean.sql.DataType;
 
@@ -27,7 +26,7 @@ public class BeanMakerTest {
 		target.init();
 
 		String expected =
-		"package com.github.xaatw0.sql2bean.beanmaker;" + System.lineSeparator() +
+		"package sql2bean.beanmaker;" + System.lineSeparator() +
 		"" + System.lineSeparator() +
 		"public class BeanMakerTest_Target{" + System.lineSeparator() +
 		"" + System.lineSeparator() +
