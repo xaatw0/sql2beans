@@ -21,7 +21,6 @@ public class Sql2BeanDB implements Closeable{
 
 	private Server server;
 	private Connection conn;
-	private PreparedStatement statement;
 
 	private Sql2BeanDB() {
 	}
@@ -92,9 +91,6 @@ public class Sql2BeanDB implements Closeable{
 	}
 
 	public PreparedStatement preparedStatement(String sql) throws SQLException{
-		return statement = conn.prepareStatement(sql);
+		return conn.prepareStatement(sql);
 	}
-
-
-
 }
