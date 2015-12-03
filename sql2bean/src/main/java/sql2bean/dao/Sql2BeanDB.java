@@ -57,7 +57,7 @@ public class Sql2BeanDB implements Closeable{
 		server = null;
 	}
 
-	public int executeUpdate(IQuery query){
+	public int executeUpdate(ISQLQuery query){
 
 		try {
 			Statement statement = conn.createStatement();

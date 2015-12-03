@@ -4,7 +4,7 @@ package sql2bean.dao;
 /**
  *実施するクエリーを表すクラス
  */
-public interface IQuery {
+public interface ISQLQuery {
 	/**
 	 * 基になるSQLを取得する
 	 * @return SQL

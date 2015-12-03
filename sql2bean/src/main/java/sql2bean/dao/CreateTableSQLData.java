@@ -1,7 +1,7 @@
 package sql2bean.dao;
 
 
-public class CreateTableSQLData implements IQuery {
+public class CreateTableSQLData implements ISQLQuery {
 
 	private final static String SQL_STATEMENT =
 			"CREATE TABLE IF NOT EXISTS  SQL_DATA ("
