@@ -109,4 +109,34 @@ public class ExecuteBeanMakerTest {
 
 	}
 
+	@Test
+	public void 更新系ISQLTypeなし() throws IOException {
+
+		SQLAnalyzer analyzer = new SQLAnalyzer();
+		List<SQLKeyValue> list = analyzer.analyze("update TEST set AGE = ${AGE}  and PHONE = ${PHONE} where ID = ${AGE}");
+		assertThat(list.size(),is(2));
+
+		assertThat(list.get(0).getKey(), is("AGE"));
+		assertThat(list.get(0).getType(), is(DataType.String));
+		list.get(0).setType(DataType.Integer);
+		assertThat(list.get(0).getType(), is(DataType.Integer));
+
+		assertThat(list.get(1).getKey(), is("PHONE"));
+		assertThat(list.get(1).getType(), is(DataType.String));
+
+		InputStream stream = getClass().getResourceAsStream("更新系ISQLTypeなし.txt");
+		byte[] data = new byte[stream.available()];
+		stream.read(data);
+
+		String[] result = analyzer.writeExecuteBean("TestPackage", "TestClass", ISQLType.NONE).split(System.lineSeparator());
+		String[] expected = new String(data).split(System.lineSeparator());
+
+		for (int i = 0; i < result.length; i ++){
+			assertThat((i+1) + "行目", result[i], is(expected[i]));
+		}
+
+		assertThat(result.length, is(expected.length));
+
+	}
+
 }

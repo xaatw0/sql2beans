@@ -3,15 +3,14 @@ package $package_name;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class $bean_name $extendInfo{
+public class $bean_name$extendInfo{
 
 	// original SQL
 	//   $originalSql
 
 	private final static String SQL_STATEMENT =
 			"$preparedSql";
-
-	$getOverride
+$getOverride
 	public String getSql() {
 		return SQL_STATEMENT;
 	}
@@ -23,8 +22,7 @@ public class $bean_name $extendInfo{
 	public $data.type get${data.keyAsPascalName}(){return $data.keyAsCamelName;}
 
 #end
-
-	$getOverride
+$getOverride
 	public void addBach(PreparedStatement preparedStatement) throws SQLException{
 
 #foreach ($data in $list)

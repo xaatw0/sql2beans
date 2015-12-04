@@ -91,8 +91,8 @@ public class SQLAnalyzer {
 		context.put("bean_name", className);
 		context.put("originalSql", getOriginalSql());
 		context.put("preparedSql", getPreparedSql());
-		context.put("extendInfo", "implements " + type.getClassName());
-		context.put("getOverride", type == ISQLType.NONE ? "" : "@Override");
+		context.put("extendInfo", type == ISQLType.NONE ? "" : " implements " + type.getClassName());
+		context.put("getOverride", type == ISQLType.NONE ? "" : System.lineSeparator() + "\t@Override");
 
 		StringWriter writer = new StringWriter();
 		Template template = Velocity.getTemplate(VM_NAME);
