@@ -33,8 +33,12 @@ public enum DataType {
 	 * SQLのオリジナルのデータ型
 	 * @return
 	 */
-	public int[] getType(){
+	public int[] getTypes(){
 		return types;
+	}
+
+	public int getType(){
+		return types[0];
 	}
 
 	/**

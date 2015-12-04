@@ -1,5 +1,6 @@
 package sql2bean.sql;
 
+import java.io.StringWriter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +9,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+
 import sql2bean.beans.SQLKeyValue;
+import sql2bean.dao.ISQLType;
 
 public class SQLAnalyzer {
 	private Pattern ptnArgument = Pattern.compile("\\$\\{([^)]*?)\\}");
@@ -67,5 +73,32 @@ public class SQLAnalyzer {
 
 	public String getPreparedSql(){
 		return preparedSql;
+	}
+
+	private final static String VM_NAME = "executeBean.vm";
+
+	/**
+	 * Velocityのテンプレートを使用して、ファイルに出力する内容を取得する
+	 * @param vimpath Velocityのテンプレートのパス
+	 * @param staffs 埋め込むスタッフのデータ
+	 * @return ファイルに出力する内容
+	 */
+	public String writeExecuteBean(String packageName, String className, ISQLType type){
+
+		VelocityContext context = new VelocityContext();
+		context.put("list", getKeyValue());
+		context.put("package_name", packageName);
+		context.put("bean_name", className);
+		context.put("originalSql", getOriginalSql());
+		context.put("preparedSql", getPreparedSql());
+		context.put("extendInfo", "implements " + type.getClassName());
+		context.put("getOverride", type == ISQLType.NONE ? "" : "@Override");
+
+		StringWriter writer = new StringWriter();
+		Template template = Velocity.getTemplate(VM_NAME);
+		template.merge(context, writer);
+		writer.flush();
+
+		return writer.toString();
 	}
 }

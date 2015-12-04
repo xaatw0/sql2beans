@@ -1,7 +1,7 @@
 package sql2bean.beans;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.*;
 
 import org.junit.Test;
 
@@ -42,6 +42,20 @@ public class SQLKeyValueTest {
 		target2.addParameter(1);
 		target2.addParameter(3);
 		assertThat(target1.equals(target2), is(true));
+	}
+
+	@Test
+	public void getKeyAsCamelName() {
+		SQLKeyValue target = new SQLKeyValue("USER_ID");
+		assertThat(target.getKey(), is( "USER_ID"));
+		assertThat(target.getKeyAsCamelName(), is( "userId"));
+	}
+
+	@Test
+	public void getKeyAsPascalName() {
+		SQLKeyValue target = new SQLKeyValue("USER_ID");
+		assertThat(target.getKey(), is( "USER_ID"));
+		assertThat(target.getKeyAsPascalName(), is( "UserId"));
 	}
 
 }
