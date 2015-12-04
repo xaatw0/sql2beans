@@ -14,7 +14,7 @@ public enum DataType {
 	/** 文字型 */
 	String(String.class, Types.VARCHAR),
 	/** 数字型 */
-	Integer(Integer.class, Types.INTEGER);
+	Integer(Integer.class, Types.INTEGER, Types.SMALLINT);
 
 	private int[] types;
 

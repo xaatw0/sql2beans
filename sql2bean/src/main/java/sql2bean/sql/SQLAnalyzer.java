@@ -2,6 +2,9 @@ package sql2bean.sql;
 
 import java.io.StringWriter;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +12,8 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import javax.activation.UnsupportedDataTypeException;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -63,9 +68,34 @@ public class SQLAnalyzer {
 	 * 参照系に使用する。
 	 * @param meta
 	 * @return
+	 * @throws UnsupportedDataTypeException
+	 * @throws SQLException
 	 */
-	public List<SQLKeyValue> analyze(ResultSetMetaData meta){
-		return null;
+	public List<SQLKeyValue> analyze(ResultSetMetaData meta) throws UnsupportedDataTypeException, SQLException{
+
+		int size = meta.getColumnCount();
+		List<SQLKeyValue> info  = new ArrayList<SQLKeyValue>(size);
+
+		for (int i = 0; i < size; i++){
+			int sqlType =  meta.getColumnType(i + 1);
+			String columnName = meta.getColumnName(i+1);
+
+			Optional<DataType> type =
+					Arrays.stream(DataType.values())
+					.filter(p->p.getValueStream().anyMatch(q -> q == sqlType))
+					.findFirst();
+
+			if (! type.isPresent()){
+				throw new UnsupportedDataTypeException("Not Upport SQL Data:" + columnName + ":" + sqlType);
+			}
+
+			SQLKeyValue column = new SQLKeyValue();
+			column.setKey(columnName);
+			column.setType(type.get());
+			info.add(column);
+		}
+
+		return info;
 	}
 
 	public void copyOldData(List<SQLKeyValue> oldData){

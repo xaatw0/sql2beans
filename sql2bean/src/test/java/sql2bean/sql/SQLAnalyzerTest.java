@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.activation.UnsupportedDataTypeException;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -123,7 +125,7 @@ public class SQLAnalyzerTest {
 	}
 
 	@Test
-	public void analyze_メタデータ(){
+	public void analyze_メタデータ() throws UnsupportedDataTypeException{
 		try{
 	        Connection conn = DriverManager.
 	            getConnection("jdbc:h2:~/test", "sa", "");
@@ -132,7 +134,7 @@ public class SQLAnalyzerTest {
 	        statement.execute("drop table if exists USER");
 	        statement.execute("create table USER (ID int, FULL_NAME varchar(50), MONEY smallint);");
 
-	        ResultSet result = statement.executeQuery("SELECT ID, NAME, MONEY FROM USER ORDER BY ID;");
+	        ResultSet result = statement.executeQuery("SELECT ID, FULL_NAME, MONEY FROM USER ORDER BY ID");
 			List<SQLKeyValue> list = target.analyze(result.getMetaData());
 
 			assertThat(list.size(), is(3));
@@ -140,20 +142,17 @@ public class SQLAnalyzerTest {
 			SQLKeyValue value0 = list.get(0);
 			assertThat(value0.getKey(), is("ID"));
 			assertThat(value0.getType(), is(DataType.Integer));
-			assertThat(value0.getParamNos(), is(nullValue()));
-			assertThat(value0.getValue(), is(""));
+			assertThat(value0.getValue(), is(nullValue()));
 
 			SQLKeyValue value1 = list.get(1);
 			assertThat(value1.getKey(), is("FULL_NAME"));
 			assertThat(value1.getType(), is(DataType.String));
-			assertThat(value1.getParamNos(), is(nullValue()));
-			assertThat(value1.getValue(), is(""));
+			assertThat(value1.getValue(), is(nullValue()));
 
 			SQLKeyValue value2 = list.get(2);
 			assertThat(value2.getKey(), is("MONEY"));
 			assertThat(value2.getType(), is(DataType.Integer));
-			assertThat(value2.getParamNos(), is(nullValue()));
-			assertThat(value2.getValue(), is(""));
+			assertThat(value2.getValue(), is(nullValue()));
 
 	        conn.close();
 

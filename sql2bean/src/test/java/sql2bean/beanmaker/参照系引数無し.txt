@@ -5,8 +5,11 @@ import java.sql.SQLException;
 
 public class SelectSQLData implements ISQLSelect<SelectSQLData.Data>{
 
+	// original SQL
+	//   SELECT ID, FULL_NAME, MONEY FROM USER ORDER BY ID
+
 	private final static String SQL_STATEMENT =
-			"select ID, STATEMENT from SQL_DATA";
+			"SELECT ID, FULL_NAME, MONEY FROM USER ORDER BY ID";
 
 	@Override
 	public String getSql() {
@@ -14,13 +17,21 @@ public class SelectSQLData implements ISQLSelect<SelectSQLData.Data>{
 	}
 
 	public class Data{
-		private String id;
-		private void setId(String id){this.id = id;}
-		public String getId(){ return id;}
+		// ID
+		private Integer id;
+		private void setId(Integer id){this.id = id;}
+		public Integer getId(){ return id;}
 
-		private String statement;
-		private void setStatement(String statement){ this.statement = statement;}
-		public String getStatement(){return statement;}
+		// FULL_NAME
+		private String fullName;
+		private void setFullName(String fullName){ this.fullName = fullName;}
+		public String getFullName(){return fullName;}
+
+		// MONEY
+		private Integer money;
+		private void setMoney(Integer money){this.money = money;}
+		public Integer getMoney(){ return money;}
+
 	}
 
 	@Override
@@ -28,8 +39,9 @@ public class SelectSQLData implements ISQLSelect<SelectSQLData.Data>{
 
 		Data data = new Data();
 
-		data.setId(result.getString(1));
-		data.setStatement(result.getString(2));
+		data.setId(result.getInteger(1));
+		data.setFullName(result.getString(2));
+		data.setMoney(result.getInteger(3));
 
 		return data;
 	}
