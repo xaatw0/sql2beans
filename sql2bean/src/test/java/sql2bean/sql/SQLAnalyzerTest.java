@@ -3,6 +3,11 @@ package sql2bean.sql;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -117,4 +122,43 @@ public class SQLAnalyzerTest {
 		assertThat(newData.get(0).getKey(), is("NAME2"));
 	}
 
+	@Test
+	public void analyze_メタデータ(){
+		try{
+	        Connection conn = DriverManager.
+	            getConnection("jdbc:h2:~/test", "sa", "");
+
+	        Statement statement = conn.createStatement();
+	        statement.execute("drop table if exists USER");
+	        statement.execute("create table USER (ID int, FULL_NAME varchar(50), MONEY smallint);");
+
+	        ResultSet result = statement.executeQuery("SELECT ID, NAME, MONEY FROM USER ORDER BY ID;");
+			List<SQLKeyValue> list = target.analyze(result.getMetaData());
+
+			assertThat(list.size(), is(3));
+
+			SQLKeyValue value0 = list.get(0);
+			assertThat(value0.getKey(), is("ID"));
+			assertThat(value0.getType(), is(DataType.Integer));
+			assertThat(value0.getParamNos(), is(nullValue()));
+			assertThat(value0.getValue(), is(""));
+
+			SQLKeyValue value1 = list.get(1);
+			assertThat(value1.getKey(), is("FULL_NAME"));
+			assertThat(value1.getType(), is(DataType.String));
+			assertThat(value1.getParamNos(), is(nullValue()));
+			assertThat(value1.getValue(), is(""));
+
+			SQLKeyValue value2 = list.get(2);
+			assertThat(value2.getKey(), is("MONEY"));
+			assertThat(value2.getType(), is(DataType.Integer));
+			assertThat(value2.getParamNos(), is(nullValue()));
+			assertThat(value2.getValue(), is(""));
+
+	        conn.close();
+
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
 }

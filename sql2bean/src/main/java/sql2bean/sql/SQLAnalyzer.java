@@ -1,6 +1,7 @@
 package sql2bean.sql;
 
 import java.io.StringWriter;
+import java.sql.ResultSetMetaData;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,12 @@ public class SQLAnalyzer {
 
 	private List<SQLKeyValue> data;
 
+	/**
+	 * SQLを分析して、SQLKeyValueのリストを作成する。
+	 * プリペアステートメントの準備をする。更新系に使用する。
+	 * @param sql
+	 * @return
+	 */
 	public List<SQLKeyValue> analyze(String sql){
 
 		originalSql = sql;
@@ -49,6 +56,16 @@ public class SQLAnalyzer {
 		}
 
 		return data = result.values().stream().collect(Collectors.toList());
+	}
+
+	/**
+	 * SQL実施後とのメタデータを解析して、SQLKeyValueのリストを作成する。
+	 * 参照系に使用する。
+	 * @param meta
+	 * @return
+	 */
+	public List<SQLKeyValue> analyze(ResultSetMetaData meta){
+		return null;
 	}
 
 	public void copyOldData(List<SQLKeyValue> oldData){
