@@ -13,7 +13,7 @@ import sql2bean.beans.SQLKeyValue;
 public class SQLAnalyzer {
 	private Pattern ptnArgument = Pattern.compile("\\$\\{([^)]*?)\\}");
 
-	private String rawSql = null;
+	private String originalSql = null;
 
 	private String preparedSql = null;
 
@@ -21,7 +21,7 @@ public class SQLAnalyzer {
 
 	public List<SQLKeyValue> analyze(String sql){
 
-		rawSql = sql;
+		originalSql = sql;
 		preparedSql = ptnArgument.matcher(sql).replaceAll("?");
 
 		Matcher matcher = ptnArgument.matcher(sql);
@@ -55,6 +55,14 @@ public class SQLAnalyzer {
 				key.setValue(old.get().getValue());
 			}
 		}
+	}
+
+	public  List<SQLKeyValue> getKeyValue(){
+		return data;
+	}
+
+	public String getOriginalSql(){
+		return originalSql;
 	}
 
 	public String getPreparedSql(){
