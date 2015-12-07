@@ -33,7 +33,11 @@ public class BeanMaker {
 	/**
 	 * 初期化する
 	 */
-	public void init(){
+	public static void init(){
+
+		if (isInitialized){
+			return;
+		}
 
 		// 初期化
 	    Properties p = new Properties();

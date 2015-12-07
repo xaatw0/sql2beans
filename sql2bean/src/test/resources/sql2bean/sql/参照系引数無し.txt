@@ -6,10 +6,10 @@ import java.sql.SQLException;
 public class SelectSQLData implements ISQLSelect<SelectSQLData.Data>{
 
 	// original SQL
-	//   SELECT ID, FULL_NAME, MONEY FROM USER ORDER BY ID
+	//   select ID, FULL_NAME, MONEY from USER order by ID
 
 	private final static String SQL_STATEMENT =
-			"SELECT ID, FULL_NAME, MONEY FROM USER ORDER BY ID";
+			"select ID, FULL_NAME, MONEY from USER order by ID";
 
 	@Override
 	public String getSql() {
@@ -17,21 +17,21 @@ public class SelectSQLData implements ISQLSelect<SelectSQLData.Data>{
 	}
 
 	public class Data{
+
 		// ID
 		private Integer id;
-		private void setId(Integer id){this.id = id;}
+		public void setId(Integer id){ this.id = id;}
 		public Integer getId(){ return id;}
 
 		// FULL_NAME
 		private String fullName;
-		private void setFullName(String fullName){ this.fullName = fullName;}
-		public String getFullName(){return fullName;}
+		public void setFullName(String fullName){ this.fullName = fullName;}
+		public String getFullName(){ return fullName;}
 
 		// MONEY
 		private Integer money;
-		private void setMoney(Integer money){this.money = money;}
+		public void setMoney(Integer money){ this.money = money;}
 		public Integer getMoney(){ return money;}
-
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package sql2bean.sql;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -74,7 +75,7 @@ public class SQLAnalyzer {
 	public List<SQLKeyValue> analyze(ResultSetMetaData meta) throws UnsupportedDataTypeException, SQLException{
 
 		int size = meta.getColumnCount();
-		List<SQLKeyValue> info  = new ArrayList<SQLKeyValue>(size);
+		data  = new ArrayList<SQLKeyValue>(size);
 
 		for (int i = 0; i < size; i++){
 			int sqlType =  meta.getColumnType(i + 1);
@@ -92,10 +93,10 @@ public class SQLAnalyzer {
 			SQLKeyValue column = new SQLKeyValue();
 			column.setKey(columnName);
 			column.setType(type.get());
-			info.add(column);
+			data.add(column);
 		}
 
-		return info;
+		return data;
 	}
 
 	public void copyOldData(List<SQLKeyValue> oldData){
@@ -143,6 +144,27 @@ public class SQLAnalyzer {
 
 		StringWriter writer = new StringWriter();
 		Template template = Velocity.getTemplate(VM_NAME);
+		template.merge(context, writer);
+		writer.flush();
+
+		return writer.toString();
+	}
+
+	private final static String VM_SELECT = "selectBean.vm";
+
+	public String writeSelectBean(String packageName, String className, ISQLType type) throws IOException{
+
+		VelocityContext context = new VelocityContext();
+		context.put("list", getKeyValue());
+		context.put("package_name", packageName);
+		context.put("bean_name", className);
+		context.put("originalSql", getOriginalSql());
+		context.put("preparedSql", getPreparedSql());
+		context.put("extendInfo", type == ISQLType.NONE ? "" : " implements " + type.getClassName());
+		context.put("getOverride", type == ISQLType.NONE ? "" : System.lineSeparator() + "\t@Override");
+
+		StringWriter writer = new StringWriter();
+		Template template = Velocity.getTemplate(VM_SELECT);
 		template.merge(context, writer);
 		writer.flush();
 

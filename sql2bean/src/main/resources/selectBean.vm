@@ -5,8 +5,11 @@ import java.sql.SQLException;
 
 public class SelectSQLData implements ISQLSelect<SelectSQLData.Data>{
 
+	// original SQL
+	//   select ID, FULL_NAME, MONEY from USER order by ID
+
 	private final static String SQL_STATEMENT =
-			"select ID, STATEMENT from SQL_DATA";
+			"select ID, FULL_NAME, MONEY from USER order by ID";
 
 	@Override
 	public String getSql() {
@@ -14,21 +17,23 @@ public class SelectSQLData implements ISQLSelect<SelectSQLData.Data>{
 	}
 
 	public class Data{
-		private String id;
-		private void setId(String id){this.id = id;}
-		public String getId(){ return id;}
+#foreach ($data in $list)
 
-		private String statement;
-		private void setStatement(String statement){ this.statement = statement;}
-		public String getStatement(){return statement;}
+		// $data.key
+		private $data.type $data.keyAsCamelName;
+		public void set${data.keyAsPascalName}(${data.type} ${data.keyAsCamelName}){ this.$data.keyAsCamelName = $data.keyAsCamelName;}
+		public $data.type get${data.keyAsPascalName}(){ return $data.keyAsCamelName;}
+#end
 	}
 
 	@Override
 	public Data convert(ResultSet result) throws SQLException {
 
 		Data data = new Data();
-		data.setId(result.getString(1));
-		data.setStatement(result.getString(2));
+
+#foreach ($data in $list)
+		data.set${data.keyAsPascalName}(result.get${data.type.ClassName}(${velocityCount}));
+#end
 
 		return data;
 	}

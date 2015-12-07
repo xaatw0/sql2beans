@@ -3,6 +3,8 @@ package sql2bean.sql;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -15,14 +17,37 @@ import java.util.regex.Pattern;
 
 import javax.activation.UnsupportedDataTypeException;
 
+import org.h2.tools.Server;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import sql2bean.beanmaker.BeanMaker;
 import sql2bean.beans.SQLKeyValue;
+import sql2bean.dao.ISQLType;
 
 public class SQLAnalyzerTest {
 
 	SQLAnalyzer target;
+	private static Server server;
+	private static Connection conn;
+
+	@BeforeClass
+	public static void start() throws SQLException, ClassNotFoundException{
+		// データベースを起動
+		server = Server.createTcpServer().start();
+		Class.forName("org.h2.Driver");
+        conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+
+        BeanMaker.init();
+	}
+
+	@AfterClass
+	public static void shutdown() throws SQLException{
+		conn.close();
+		server.shutdown();
+	}
 
 	@Before
 	public void tearUp(){
@@ -127,9 +152,6 @@ public class SQLAnalyzerTest {
 	@Test
 	public void analyze_メタデータ() throws UnsupportedDataTypeException{
 		try{
-	        Connection conn = DriverManager.
-	            getConnection("jdbc:h2:~/test", "sa", "");
-
 	        Statement statement = conn.createStatement();
 	        statement.execute("drop table if exists USER");
 	        statement.execute("create table USER (ID int, FULL_NAME varchar(50), MONEY smallint);");
@@ -154,8 +176,160 @@ public class SQLAnalyzerTest {
 			assertThat(value2.getType(), is(DataType.Integer));
 			assertThat(value2.getValue(), is(nullValue()));
 
-	        conn.close();
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
 
+
+	@Test
+	public void 更新系引数無し() throws IOException {
+
+		SQLAnalyzer analyzer = new SQLAnalyzer();
+		List<SQLKeyValue> list = analyzer.analyze("update test where id = 1");
+		assertThat(list.size(),is(0));
+
+		InputStream stream = getClass().getResourceAsStream("更新系引数無し.txt");
+		byte[] data = new byte[stream.available()];
+		stream.read(data);
+
+		String[] result = analyzer.writeExecuteBean("TestPackage", "TestClass", ISQLType.ISQLExecute).split(System.lineSeparator());
+		String[] expected = new String(data).split(System.lineSeparator());
+
+		for (int i = 0; i < result.length; i ++){
+			assertThat((i+1) + "行目", result[i], is(expected[i]));
+		}
+
+		assertThat(result.length, is(expected.length));
+
+	}
+
+	@Test
+	public void 更新系引数3つ() throws IOException {
+
+		SQLAnalyzer analyzer = new SQLAnalyzer();
+		List<SQLKeyValue> list = analyzer.analyze("update TEST set AGE = ${AGE}  and PHONE = ${PHONE} where ID = ${ID}");
+		assertThat(list.size(),is(3));
+
+		assertThat(list.get(0).getKey(), is("AGE"));
+		assertThat(list.get(0).getType(), is(DataType.String));
+		list.get(0).setType(DataType.Integer);
+		assertThat(list.get(0).getType(), is(DataType.Integer));
+
+		assertThat(list.get(1).getKey(), is("PHONE"));
+		assertThat(list.get(1).getType(), is(DataType.String));
+
+		assertThat(list.get(2).getKey(), is("ID"));
+		assertThat(list.get(2).getType(), is(DataType.String));
+		list.get(2).setType(DataType.Integer);
+		assertThat(list.get(2).getType(), is(DataType.Integer));
+
+		InputStream stream = getClass().getResourceAsStream("更新系引数3つ.txt");
+		byte[] data = new byte[stream.available()];
+		stream.read(data);
+
+		String[] result = analyzer.writeExecuteBean("TestPackage", "TestClass", ISQLType.ISQLExecute).split(System.lineSeparator());
+		String[] expected = new String(data).split(System.lineSeparator());
+
+		for (int i = 0; i < result.length; i ++){
+			assertThat((i+1) + "行目", result[i], is(expected[i]));
+		}
+
+		assertThat(result.length, is(expected.length));
+
+	}
+
+	@Test
+	public void 更新系引数3つ1つかぶる() throws IOException {
+
+		SQLAnalyzer analyzer = new SQLAnalyzer();
+		List<SQLKeyValue> list = analyzer.analyze("update TEST set AGE = ${AGE}  and PHONE = ${PHONE} where ID = ${AGE}");
+		assertThat(list.size(),is(2));
+
+		assertThat(list.get(0).getKey(), is("AGE"));
+		assertThat(list.get(0).getType(), is(DataType.String));
+		list.get(0).setType(DataType.Integer);
+		assertThat(list.get(0).getType(), is(DataType.Integer));
+
+		assertThat(list.get(1).getKey(), is("PHONE"));
+		assertThat(list.get(1).getType(), is(DataType.String));
+
+		InputStream stream = getClass().getResourceAsStream("更新系引数3つ1つかぶる.txt");
+		byte[] data = new byte[stream.available()];
+		stream.read(data);
+
+		String[] result = analyzer.writeExecuteBean("TestPackage", "TestClass", ISQLType.ISQLExecute).split(System.lineSeparator());
+		String[] expected = new String(data).split(System.lineSeparator());
+
+		for (int i = 0; i < result.length; i ++){
+			assertThat((i+1) + "行目", result[i], is(expected[i]));
+		}
+
+		assertThat(result.length, is(expected.length));
+
+	}
+
+	@Test
+	public void 更新系ISQLTypeなし() throws IOException {
+
+		SQLAnalyzer analyzer = new SQLAnalyzer();
+		List<SQLKeyValue> list = analyzer.analyze("update TEST set AGE = ${AGE}  and PHONE = ${PHONE} where ID = ${AGE}");
+		assertThat(list.size(),is(2));
+
+		assertThat(list.get(0).getKey(), is("AGE"));
+		assertThat(list.get(0).getType(), is(DataType.String));
+		list.get(0).setType(DataType.Integer);
+		assertThat(list.get(0).getType(), is(DataType.Integer));
+
+		assertThat(list.get(1).getKey(), is("PHONE"));
+		assertThat(list.get(1).getType(), is(DataType.String));
+
+		InputStream stream = getClass().getResourceAsStream("更新系ISQLTypeなし.txt");
+		byte[] data = new byte[stream.available()];
+		stream.read(data);
+
+		String[] result = analyzer.writeExecuteBean("TestPackage", "TestClass", ISQLType.NONE).split(System.lineSeparator());
+		String[] expected = new String(data).split(System.lineSeparator());
+
+		for (int i = 0; i < result.length; i ++){
+			assertThat((i+1) + "行目", result[i], is(expected[i]));
+		}
+
+		assertThat(result.length, is(expected.length));
+
+	}
+
+	@Test
+	public void 参照系ISQLTypeなし() throws IOException {
+		try{
+	        Statement statement = conn.createStatement();
+	        statement.execute("drop table if exists USER");
+	        statement.execute("create table USER (ID int, FULL_NAME varchar(50), MONEY smallint);");
+
+	        ResultSet resultSet = statement.executeQuery("select ID, FULL_NAME, MONEY from USER order by ID");
+			List<SQLKeyValue> list = target.analyze(resultSet.getMetaData());
+
+			assertThat(list.get(0).getKey(), is("ID"));
+			assertThat(list.get(0).getType(), is(DataType.Integer));
+
+			assertThat(list.get(1).getKey(), is("FULL_NAME"));
+			assertThat(list.get(1).getType(), is(DataType.String));
+
+			assertThat(list.get(2).getKey(), is("MONEY"));
+			assertThat(list.get(2).getType(), is(DataType.Integer));
+
+			InputStream stream = getClass().getResourceAsStream("参照系引数無し.txt");
+			byte[] data = new byte[stream.available()];
+			stream.read(data);
+
+			String[] result = target.writeSelectBean("TestPackage", "TestClass", ISQLType.NONE).split(System.lineSeparator());
+			String[] expected = new String(data).split(System.lineSeparator());
+
+			for (int i = 0; i < result.length; i ++){
+				assertThat((i+1) + "行目", result[i], is(expected[i]));
+			}
+
+			assertThat(result.length, is(expected.length));
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
