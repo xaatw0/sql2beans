@@ -23,7 +23,6 @@ public class SelectSQLData implements ISQLSelect<SelectSQLData.Data>{
 	public $data.type get${data.keyAsPascalName}(){ return $data.keyAsCamelName;}
 
 #end
-
 	public class Data{
 #foreach ($data in $list)
 

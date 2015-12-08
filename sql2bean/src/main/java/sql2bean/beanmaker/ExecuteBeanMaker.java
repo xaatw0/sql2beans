@@ -22,7 +22,7 @@ public class ExecuteBeanMaker {
 	public String write(SQLAnalyzer analyzer, String packageName, String className, ISQLType type){
 
 		VelocityContext context = new VelocityContext();
-		context.put("list", analyzer.getKeyValue());
+		context.put("list", analyzer.getParameterFormat());
 		context.put("package_name", packageName);
 		context.put("bean_name", className);
 		context.put("originalSql", analyzer.getOriginalSql());

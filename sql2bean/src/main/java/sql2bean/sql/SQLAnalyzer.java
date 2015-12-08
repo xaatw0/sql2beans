@@ -113,7 +113,7 @@ public class SQLAnalyzer {
 		}
 	}
 
-	public  List<SQLKeyValue> getKeyValue(){
+	public  List<SQLKeyValue> getParameterFormat(){
 		return lstParameter;
 	}
 
@@ -140,7 +140,7 @@ public class SQLAnalyzer {
 	public String writeExecuteBean(String packageName, String className, ISQLType type){
 
 		VelocityContext context = new VelocityContext();
-		context.put("list", getKeyValue());
+		context.put("list", getParameterFormat());
 		context.put("package_name", packageName);
 		context.put("bean_name", className);
 		context.put("originalSql", getOriginalSql());
@@ -161,7 +161,7 @@ public class SQLAnalyzer {
 	public String writeSelectBean(String packageName, String className, ISQLType type) throws IOException{
 
 		VelocityContext context = new VelocityContext();
-		context.put("list", getKeyValue());
+		context.put("list", getParameterFormat());
 		context.put("package_name", packageName);
 		context.put("bean_name", className);
 		context.put("originalSql", getOriginalSql());
