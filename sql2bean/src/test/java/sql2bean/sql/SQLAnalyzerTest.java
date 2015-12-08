@@ -271,6 +271,33 @@ public class SQLAnalyzerTest {
 	}
 
 	@Test
+	public void 更新系テスト() throws IOException {
+
+		SQLAnalyzer analyzer = new SQLAnalyzer();
+		List<SQLKeyValue> list = analyzer.analyze("insert into D_PARKING_LOG(AREA_NO,RACK_NO,LOADING_TIME,UNLOADING_TIME,FEE_TYPE,RECEIPT_PRICE,PASS_PRICE,TICKET_PRICE,PREPAID_PRICE,CARD_PRICE,CARD1,CARD2,USER_ID,FLG_ILLEGAL_UNLOADING,FLG_FORCED_UNLOADING) values (${AREA_NO},${RACK_NO},${LOADING_TIME},${UNLOADING_TIME},${FEE_TYPE},${RECEIPT_PRICE},${PASS_PRICE},${TICKET_PRICE},${PREPAID_PRICE},${CARD_PRICE},${CARD1},${CARD2},${USER_ID},${FLG_ILLEGAL_UNLOADING},${FLG_FORCED_UNLOADING})");
+		assertThat(list.size(),is(15));
+
+		list.get(0).setType(DataType.Integer);
+		list.get(1).setType(DataType.Integer);
+		list.get(2).setType(DataType.Timestamp);
+		list.get(3).setType(DataType.Timestamp);
+		list.get(4).setType(DataType.Integer);
+		list.get(5).setType(DataType.Integer);
+		list.get(6).setType(DataType.Integer);
+		list.get(7).setType(DataType.Integer);
+		list.get(8).setType(DataType.Integer);
+		list.get(9).setType(DataType.Integer);
+		list.get(10).setType(DataType.Integer);
+		list.get(11).setType(DataType.Integer);
+		list.get(12).setType(DataType.String);
+		list.get(13).setType(DataType.Boolean);
+		list.get(14).setType(DataType.Boolean);
+
+		String result = analyzer.writeExecuteBean("parkinglog", "InsertParkingLog", ISQLType.ISQLExecute);
+		assertThat(result.length() > 0, is(true));
+	}
+
+	@Test
 	public void 更新系ISQLTypeなし() throws IOException {
 
 		SQLAnalyzer analyzer = new SQLAnalyzer();

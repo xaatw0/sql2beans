@@ -26,9 +26,9 @@ public class SelectSQLData implements ISQLSelect<SelectSQLData.Data>{
 	public void setFullName(String fullName){ this.fullName = fullName;}
 	public String getFullName(){ return fullName;}
 
+
 	@Override
 	public void setParameters(PreparedStatement preparedStatement) throws SQLException{
-
 		preparedStatement.setObject(1, getId(), 4);
 		preparedStatement.setObject(2, getFullName(), 12);
 	}

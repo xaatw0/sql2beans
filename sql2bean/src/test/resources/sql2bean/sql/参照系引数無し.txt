@@ -16,6 +16,11 @@ public class SelectSQLData{
 		return SQL_STATEMENT;
 	}
 
+
+
+	public void setParameters(PreparedStatement preparedStatement) throws SQLException{
+	}
+
 	public class Data{
 
 		// ID

@@ -23,6 +23,16 @@ $getOverride
 	public $data.type get${data.keyAsPascalName}(){ return $data.keyAsCamelName;}
 
 #end
+
+$getOverride
+	public void setParameters(PreparedStatement preparedStatement) throws SQLException{
+#foreach ($data in $list)
+#foreach ($no in $data.getParamNos())
+		preparedStatement.setObject($no, get${data.keyAsPascalName}(), $data.type.type);
+#end
+#end
+	}
+
 	public class Data{
 #foreach ($data in $resultFormat)
 
