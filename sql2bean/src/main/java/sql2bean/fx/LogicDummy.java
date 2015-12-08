@@ -38,12 +38,12 @@ public class LogicDummy implements LogicInterface<DummyObject> {
 
 	        Statement statement = conn.createStatement();
 	        statement.execute("DROP TABLE IF EXISTS USER;");
-	        statement.execute("CREATE TABLE USER (ID INT, NAME VARCHAR(50));");
-	        statement.execute("INSERT INTO USER VALUES(1,'test1');");
-	        statement.execute("INSERT INTO USER VALUES(2,'test2');");
-	        statement.execute("INSERT INTO USER VALUES(3,'test3');");
+	        statement.execute("CREATE TABLE USER (ID int, FULL_NAME VARCHAR(50), MONEY int);");
+	        statement.execute("INSERT INTO USER VALUES(1,'test1', 100);");
+	        statement.execute("INSERT INTO USER VALUES(2,'test2', 200);");
+	        statement.execute("INSERT INTO USER VALUES(3,'test3', 300);");
 
-	        ResultSet result = statement.executeQuery("SELECT ID,NAME FROM USER ORDER BY ID;");
+	        ResultSet result = statement.executeQuery("SELECT ID,NAME, MONEY FROM USER ORDER BY ID;");
 			metaData = result.getMetaData();
 
 			columnInfos = ColumnInfo.createColumnInfo(result.getMetaData());
