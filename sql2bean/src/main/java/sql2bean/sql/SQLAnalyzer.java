@@ -30,7 +30,9 @@ public class SQLAnalyzer {
 
 	private String preparedSql = null;
 
-	private List<SQLKeyValue> data;
+	private List<SQLKeyValue> lstParameter;
+
+	private List<SQLKeyValue> lstResult;
 
 	/**
 	 * SQLを分析して、SQLKeyValueのリストを作成する。
@@ -61,7 +63,7 @@ public class SQLAnalyzer {
 			index++;
 		}
 
-		return data = result.values().stream().collect(Collectors.toList());
+		return lstParameter = result.values().stream().collect(Collectors.toList());
 	}
 
 	/**
@@ -75,7 +77,7 @@ public class SQLAnalyzer {
 	public List<SQLKeyValue> analyze(ResultSetMetaData meta) throws UnsupportedDataTypeException, SQLException{
 
 		int size = meta.getColumnCount();
-		data  = new ArrayList<SQLKeyValue>(size);
+		lstResult  = new ArrayList<SQLKeyValue>(size);
 
 		for (int i = 0; i < size; i++){
 			int sqlType =  meta.getColumnType(i + 1);
@@ -93,15 +95,15 @@ public class SQLAnalyzer {
 			SQLKeyValue column = new SQLKeyValue();
 			column.setKey(columnName);
 			column.setType(type.get());
-			data.add(column);
+			lstResult.add(column);
 		}
 
-		return data;
+		return lstResult;
 	}
 
 	public void copyOldData(List<SQLKeyValue> oldData){
 
-		for (SQLKeyValue key: data){
+		for (SQLKeyValue key: lstParameter){
 
 			Optional<SQLKeyValue> old = oldData.stream().filter(p-> p.getKey().equals(key.getKey())).findAny();
 			if (old.isPresent()){
@@ -112,7 +114,11 @@ public class SQLAnalyzer {
 	}
 
 	public  List<SQLKeyValue> getKeyValue(){
-		return data;
+		return lstParameter;
+	}
+
+	public List<SQLKeyValue> getResultFormat(){
+		return lstResult;
 	}
 
 	public String getOriginalSql(){

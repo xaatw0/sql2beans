@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -300,38 +301,93 @@ public class SQLAnalyzerTest {
 	}
 
 	@Test
-	public void 参照系ISQLTypeなし() throws IOException {
-		try{
-	        Statement statement = conn.createStatement();
-	        statement.execute("drop table if exists USER");
-	        statement.execute("create table USER (ID int, FULL_NAME varchar(50), MONEY smallint);");
+	public void 参照系ISQLTypeなし() throws IOException, SQLException {
 
-	        ResultSet resultSet = statement.executeQuery("select ID, FULL_NAME, MONEY from USER order by ID");
-			List<SQLKeyValue> list = target.analyze(resultSet.getMetaData());
+        Statement statement = conn.createStatement();
+        statement.execute("drop table if exists USER");
+        statement.execute("create table USER (ID int, FULL_NAME varchar(50), MONEY smallint);");
 
-			assertThat(list.get(0).getKey(), is("ID"));
-			assertThat(list.get(0).getType(), is(DataType.Integer));
+        String sql = "select ID, FULL_NAME, MONEY from USER order by ID";
+        target.analyze(sql);
 
-			assertThat(list.get(1).getKey(), is("FULL_NAME"));
-			assertThat(list.get(1).getType(), is(DataType.String));
+        ResultSet resultSet = statement.executeQuery(sql);
+        List<SQLKeyValue> list = target.analyze(resultSet.getMetaData());
 
-			assertThat(list.get(2).getKey(), is("MONEY"));
-			assertThat(list.get(2).getType(), is(DataType.Integer));
+		assertThat(list.get(0).getKey(), is("ID"));
+		assertThat(list.get(0).getType(), is(DataType.Integer));
 
-			InputStream stream = getClass().getResourceAsStream("参照系引数無し.txt");
-			byte[] data = new byte[stream.available()];
-			stream.read(data);
+		assertThat(list.get(1).getKey(), is("FULL_NAME"));
+		assertThat(list.get(1).getType(), is(DataType.String));
 
-			String[] result = target.writeSelectBean("TestPackage", "TestClass", ISQLType.NONE).split(System.lineSeparator());
-			String[] expected = new String(data).split(System.lineSeparator());
+		assertThat(list.get(2).getKey(), is("MONEY"));
+		assertThat(list.get(2).getType(), is(DataType.Integer));
 
-			for (int i = 0; i < result.length; i ++){
-				assertThat((i+1) + "行目", result[i], is(expected[i]));
-			}
+		InputStream stream = getClass().getResourceAsStream("参照系引数無し.txt");
+		byte[] data = new byte[stream.available()];
+		stream.read(data);
 
-			assertThat(result.length, is(expected.length));
-		}catch(SQLException e){
-			e.printStackTrace();
+		String[] result = target.writeSelectBean("TestPackage", "TestClass", ISQLType.NONE).split(System.lineSeparator());
+		String[] expected = new String(data).split(System.lineSeparator());
+
+		for (int i = 0; i < result.length; i ++){
+			assertThat((i+1) + "行目", result[i], is(expected[i]));
 		}
+
+		assertThat(result.length, is(expected.length));
+	}
+
+	@Test
+	public void 参照系引数2つ() throws IOException, SQLException {
+
+        Statement statement = conn.createStatement();
+        statement.execute("drop table if exists USER");
+        statement.execute("create table USER (ID int, FULL_NAME varchar(50), MONEY smallint);");
+
+        // ResultSetを取得するためのSQLを作成する
+        List<SQLKeyValue> prelist = target.analyze("select ID, FULL_NAME, MONEY from USER where ID = ${ID} and FULL_NAME = ${FULL_NAME}");
+        assertThat(prelist.size(), is(2));
+		assertThat(prelist.get(0).getKey(), is("ID"));
+		assertThat(prelist.get(0).getType(), is(DataType.String));
+		prelist.get(0).setType(DataType.Integer);
+		assertThat(prelist.get(0).getType(), is(DataType.Integer));
+		prelist.get(0).setValue("1");
+
+		assertThat(prelist.get(1).getKey(), is("FULL_NAME"));
+		assertThat(prelist.get(1).getType(), is(DataType.String));
+		prelist.get(1).setValue("1");
+
+		PreparedStatement preparedStatement = conn.prepareStatement(target.getPreparedSql());
+		for(SQLKeyValue sqlKeyValue: prelist){
+
+			for (Integer index: sqlKeyValue.getParamNos()){
+				preparedStatement.setObject(index.intValue(), sqlKeyValue.getValue());
+			}
+		}
+
+		// ResultSetを取得して、結果を分析する
+        ResultSet resultSet = preparedStatement.executeQuery();
+		List<SQLKeyValue> list = target.analyze(resultSet.getMetaData());
+
+		assertThat(list.get(0).getKey(), is("ID"));
+		assertThat(list.get(0).getType(), is(DataType.Integer));
+
+		assertThat(list.get(1).getKey(), is("FULL_NAME"));
+		assertThat(list.get(1).getType(), is(DataType.String));
+
+		assertThat(list.get(2).getKey(), is("MONEY"));
+		assertThat(list.get(2).getType(), is(DataType.Integer));
+
+		InputStream stream = getClass().getResourceAsStream("参照系引数2つ.txt");
+		byte[] data = new byte[stream.available()];
+		stream.read(data);
+
+		String[] result = target.writeSelectBean("TestPackage", "TestClass", ISQLType.NONE).split(System.lineSeparator());
+		String[] expected = new String(data).split(System.lineSeparator());
+
+		for (int i = 0; i < result.length; i ++){
+			assertThat((i+1) + "行目", result[i], is(expected[i]));
+		}
+
+		assertThat(result.length, is(expected.length));
 	}
 }

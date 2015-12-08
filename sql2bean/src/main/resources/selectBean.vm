@@ -6,15 +6,23 @@ import java.sql.SQLException;
 public class SelectSQLData implements ISQLSelect<SelectSQLData.Data>{
 
 	// original SQL
-	//   select ID, FULL_NAME, MONEY from USER order by ID
+	//   ${originalSql}
 
 	private final static String SQL_STATEMENT =
-			"select ID, FULL_NAME, MONEY from USER order by ID";
+			"$preparedSql";
 
 	@Override
 	public String getSql() {
 		return SQL_STATEMENT;
 	}
+
+#foreach ($data in $list)
+	// $data.key
+	private $data.type $data.keyAsCamelName;
+	public void set${data.keyAsPascalName}(${data.type} ${data.keyAsCamelName}){ this.$data.keyAsCamelName = $data.keyAsCamelName;}
+	public $data.type get${data.keyAsPascalName}(){ return $data.keyAsCamelName;}
+
+#end
 
 	public class Data{
 #foreach ($data in $list)
