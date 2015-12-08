@@ -381,7 +381,7 @@ public class SQLAnalyzerTest {
 		byte[] data = new byte[stream.available()];
 		stream.read(data);
 
-		String[] result = target.writeSelectBean("TestPackage", "TestClass", ISQLType.NONE).split(System.lineSeparator());
+		String[] result = target.writeSelectBean("TestPackage", "TestClass", ISQLType.ISQLSelect).split(System.lineSeparator());
 		String[] expected = new String(data).split(System.lineSeparator());
 
 		for (int i = 0; i < result.length; i ++){
