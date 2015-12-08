@@ -118,6 +118,5 @@ public class ColumnInfo {
 		}
 
 		return info;
-
 	}
 }

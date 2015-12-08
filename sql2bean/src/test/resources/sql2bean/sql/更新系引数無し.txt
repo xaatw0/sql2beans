@@ -1,0 +1,26 @@
+package TestPackage;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public class TestClass implements ISQLBatch{
+
+	// original SQL
+	//   update test where id = 1
+
+	private final static String SQL_STATEMENT =
+			"update test where id = 1";
+
+	@Override
+	public String getSql() {
+		return SQL_STATEMENT;
+	}
+
+
+	@Override
+	public void addBach(PreparedStatement preparedStatement) throws SQLException{
+
+
+		preparedStatement.addBatch();
+	}
+}

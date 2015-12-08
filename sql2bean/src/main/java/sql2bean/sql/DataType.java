@@ -1,5 +1,7 @@
 package sql2bean.sql;
 
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Arrays;
 import java.util.stream.IntStream;
@@ -14,7 +16,14 @@ public enum DataType {
 	/** 文字型 */
 	String(String.class, Types.VARCHAR),
 	/** 数字型 */
-	Integer(Integer.class, Types.INTEGER);
+	Integer(Integer.class, Types.INTEGER, Types.SMALLINT),
+	/** 日付型*/
+	Timestamp(Timestamp.class, Types.TIMESTAMP),
+	/** 日付型*/
+	Date(Date.class, Types.DATE),
+	/** 真偽*/
+	Boolean(Boolean.class, Types.BOOLEAN),
+	;
 
 	private int[] types;
 
@@ -33,8 +42,12 @@ public enum DataType {
 	 * SQLのオリジナルのデータ型
 	 * @return
 	 */
-	public int[] getType(){
+	public int[] getTypes(){
 		return types;
+	}
+
+	public int getType(){
+		return types[0];
 	}
 
 	/**

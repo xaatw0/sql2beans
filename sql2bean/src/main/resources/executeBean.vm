@@ -1,0 +1,36 @@
+package $package_name;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public class $bean_name$extendInfo{
+
+	// original SQL
+	//   $originalSql
+
+	private final static String SQL_STATEMENT =
+			"$preparedSql";
+$getOverride
+	public String getSql() {
+		return SQL_STATEMENT;
+	}
+
+#foreach ($data in $list)
+	// $data.key
+	private $data.type $data.keyAsCamelName;
+	public void set${data.keyAsPascalName}(${data.type} ${data.keyAsCamelName}){this.$data.keyAsCamelName = $data.keyAsCamelName;}
+	public $data.type get${data.keyAsPascalName}(){return $data.keyAsCamelName;}
+
+#end
+$getOverride
+	public void addBach(PreparedStatement preparedStatement) throws SQLException{
+
+#foreach ($data in $list)
+#foreach ($no in $data.getParamNos())
+		preparedStatement.setObject($no, get${data.keyAsPascalName}(), $data.type.type);
+#end
+#end
+
+		preparedStatement.addBatch();
+	}
+}

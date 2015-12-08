@@ -8,12 +8,18 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import sql2bean.sql.ColumnInfo;
 import sql2bean.sql.DataType;
 
 public class BeanMakerTest {
+
+	@BeforeClass
+	public static void setup(){
+		BeanMaker.init();
+	}
 
 	@Test
 	public void write() {
@@ -23,7 +29,6 @@ public class BeanMakerTest {
 		List<ColumnInfo> data = Arrays.asList(info1, info2);
 
 		BeanMaker target = new BeanMaker(null);
-		target.init();
 
 		String expected =
 		"package sql2bean.beanmaker;" + System.lineSeparator() +
@@ -62,7 +67,6 @@ public class BeanMakerTest {
 		List<ColumnInfo> data = Arrays.asList(info1, info2);
 
 		BeanMaker target = new BeanMaker("target\\test-classes");
-		target.init();
 		target.compile(data, "com.github.xaatw0.sql2bean.beanmaker", "BeanMakerTest_Target");
 
 		Object obj = null;

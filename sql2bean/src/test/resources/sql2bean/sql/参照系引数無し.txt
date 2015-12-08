@@ -1,0 +1,53 @@
+package sql2bean.dao;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class SelectSQLData{
+
+	// original SQL
+	//   select ID, FULL_NAME, MONEY from USER order by ID
+
+	private final static String SQL_STATEMENT =
+			"select ID, FULL_NAME, MONEY from USER order by ID";
+
+
+	public String getSql() {
+		return SQL_STATEMENT;
+	}
+
+
+
+	public void setParameters(PreparedStatement preparedStatement) throws SQLException{
+	}
+
+	public class Data{
+
+		// ID
+		private Integer id;
+		public void setId(Integer id){ this.id = id;}
+		public Integer getId(){ return id;}
+
+		// FULL_NAME
+		private String fullName;
+		public void setFullName(String fullName){ this.fullName = fullName;}
+		public String getFullName(){ return fullName;}
+
+		// MONEY
+		private Integer money;
+		public void setMoney(Integer money){ this.money = money;}
+		public Integer getMoney(){ return money;}
+	}
+
+
+	public Data convert(ResultSet result) throws SQLException {
+
+		Data data = new Data();
+
+		data.setId(result.getInteger(1));
+		data.setFullName(result.getString(2));
+		data.setMoney(result.getInteger(3));
+
+		return data;
+	}
+}

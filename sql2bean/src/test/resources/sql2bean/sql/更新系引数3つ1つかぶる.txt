@@ -1,0 +1,39 @@
+package TestPackage;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public class TestClass implements ISQLBatch{
+
+	// original SQL
+	//   update TEST set AGE = ${AGE}  and PHONE = ${PHONE} where ID = ${AGE}
+
+	private final static String SQL_STATEMENT =
+			"update TEST set AGE = ?  and PHONE = ? where ID = ?";
+
+	@Override
+	public String getSql() {
+		return SQL_STATEMENT;
+	}
+
+	// AGE
+	private Integer age;
+	public void setAge(Integer age){this.age = age;}
+	public Integer getAge(){return age;}
+
+	// PHONE
+	private String phone;
+	public void setPhone(String phone){this.phone = phone;}
+	public String getPhone(){return phone;}
+
+
+	@Override
+	public void addBach(PreparedStatement preparedStatement) throws SQLException{
+
+		preparedStatement.setObject(1, getAge(), 4);
+		preparedStatement.setObject(3, getAge(), 4);
+		preparedStatement.setObject(2, getPhone(), 12);
+
+		preparedStatement.addBatch();
+	}
+}

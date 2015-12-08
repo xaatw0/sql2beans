@@ -1,0 +1,57 @@
+package sql2bean.dao;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class $bean_name$extendInfo{
+
+	// original SQL
+	//   ${originalSql}
+
+	private final static String SQL_STATEMENT =
+			"$preparedSql";
+
+$getOverride
+	public String getSql() {
+		return SQL_STATEMENT;
+	}
+
+#foreach ($data in $list)
+	// $data.key
+	private $data.type $data.keyAsCamelName;
+	public void set${data.keyAsPascalName}(${data.type} ${data.keyAsCamelName}){ this.$data.keyAsCamelName = $data.keyAsCamelName;}
+	public $data.type get${data.keyAsPascalName}(){ return $data.keyAsCamelName;}
+
+#end
+
+$getOverride
+	public void setParameters(PreparedStatement preparedStatement) throws SQLException{
+#foreach ($data in $list)
+#foreach ($no in $data.getParamNos())
+		preparedStatement.setObject($no, get${data.keyAsPascalName}(), $data.type.type);
+#end
+#end
+	}
+
+	public class Data{
+#foreach ($data in $resultFormat)
+
+		// $data.key
+		private $data.type $data.keyAsCamelName;
+		public void set${data.keyAsPascalName}(${data.type} ${data.keyAsCamelName}){ this.$data.keyAsCamelName = $data.keyAsCamelName;}
+		public $data.type get${data.keyAsPascalName}(){ return $data.keyAsCamelName;}
+#end
+	}
+
+$getOverride
+	public Data convert(ResultSet result) throws SQLException {
+
+		Data data = new Data();
+
+#foreach ($data in $resultFormat)
+		data.set${data.keyAsPascalName}(result.get${data.type.ClassName}(${velocityCount}));
+#end
+
+		return data;
+	}
+}
