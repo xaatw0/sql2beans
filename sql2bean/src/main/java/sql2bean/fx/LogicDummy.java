@@ -18,7 +18,7 @@ import sql2bean.beans.SQLKeyValue;
 import sql2bean.sql.ColumnInfo;
 import sql2bean.sql.SQLAnalyzer;
 
-public class LogicDummy implements LogicInterface<DummyObject> {
+public class LogicDummy implements LogicInterface<DummyBean> {
 
 	private SQLAnalyzer analyzer = new SQLAnalyzer();
 
@@ -31,9 +31,9 @@ public class LogicDummy implements LogicInterface<DummyObject> {
 	}
 
 	@Override
-	public ObservableList<DummyObject> execute(String sql) {
+	public ObservableList<DummyBean> execute(String sql) {
 
-		ObservableList<DummyObject> data = FXCollections.observableArrayList();
+		ObservableList<DummyBean> data = FXCollections.observableArrayList();
 
 		try{
 	        Connection conn = DriverManager.
@@ -53,7 +53,7 @@ public class LogicDummy implements LogicInterface<DummyObject> {
 			columnInfos = ColumnInfo.createColumnInfo(result.getMetaData());
 
 			while(result.next()){
-				data.add(new DummyObject(result.getInt("ID"), result.getString("FULL_NAME"),result.getInt("MONEY")));
+				data.add(new DummyBean(result.getInt("ID"), result.getString("FULL_NAME"),result.getInt("MONEY")));
 			}
 
 	        conn.close();
@@ -95,8 +95,8 @@ public class LogicDummy implements LogicInterface<DummyObject> {
 
 
 	@Override
-	public void setCell(TableColumn<DummyObject, String> column, String columnName) {
-		column.setCellValueFactory(new PropertyValueFactory<DummyObject,String>(columnName));
+	public void setCell(TableColumn<DummyBean, String> column, String columnName) {
+		column.setCellValueFactory(new PropertyValueFactory<DummyBean,String>(columnName));
 	}
 
 	@Override
