@@ -11,6 +11,8 @@ import javafx.stage.Stage;
 
 import org.h2.tools.Server;
 
+import sql2bean.beanmaker.BeanMaker;
+
 
 public class FXMain<T> extends Application {
 
@@ -38,6 +40,9 @@ public class FXMain<T> extends Application {
 			server = Server.createTcpServer().start();
 
 			Class.forName("org.h2.Driver");
+
+			// Velocityの初期化
+	        BeanMaker.init();
 
 		} catch(Exception e) {
 			e.printStackTrace();

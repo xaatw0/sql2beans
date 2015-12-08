@@ -1,11 +1,16 @@
 package sql2bean.fx;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,11 +19,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import javax.activation.UnsupportedDataTypeException;
 
+import sql2bean.beanmaker.BeanMaker;
 import sql2bean.beans.SQLKeyValue;
+import sql2bean.dao.ISQLType;
 import sql2bean.sql.ColumnInfo;
+import sql2bean.sql.DataType;
 import sql2bean.sql.SQLAnalyzer;
 
-public class LogicDummy implements LogicInterface<DummyBean> {
+public class LogicDummy implements LogicInterface<Object> {
 
 	private SQLAnalyzer analyzer = new SQLAnalyzer();
 
@@ -31,9 +39,9 @@ public class LogicDummy implements LogicInterface<DummyBean> {
 	}
 
 	@Override
-	public ObservableList<DummyBean> execute(String sql) {
+	public ObservableList execute(String sql) {
 
-		ObservableList<DummyBean> data = FXCollections.observableArrayList();
+		ObservableList<Object> data = FXCollections.observableArrayList();
 
 		try{
 	        Connection conn = DriverManager.
@@ -46,19 +54,59 @@ public class LogicDummy implements LogicInterface<DummyBean> {
 	        statement.execute("INSERT INTO USER VALUES(2,'test2', 200);");
 	        statement.execute("INSERT INTO USER VALUES(3,'test3', 300);");
 
-	        //ResultSet result = statement.executeQuery("SELECT ID,FULL_NAME, MONEY FROM USER ORDER BY ID;");
-	        ResultSet result = statement.executeQuery("SELECT ID,FULL_NAME, MONEY FROM USER ORDER BY ID;");
-			metaData = result.getMetaData();
+	        List<SQLKeyValue> params = analyzer.analyze(sql);
+	        params.get(0).addParameter(1);
+	        params.get(0).setValue("1");
+	        params.get(0).setType(DataType.Integer);
+
+	        PreparedStatement preparedStatement = conn.prepareStatement(analyzer.getPreparedSql());
+	        analyzer.setParameter(preparedStatement);
+	        ResultSet result = preparedStatement.executeQuery();
+	        analyzer.analyze(result.getMetaData());
+
+	        String source = analyzer.writeSelectBean("testpackage", "testclass", ISQLType.NONE);
+	        BeanMaker maker = new BeanMaker("target\\classes");
+	        maker.compile("testpackage.testclass", source);
+
+	        Class clazz = Class.forName("testpackage.testclass");
+	        Object dao = clazz.newInstance();
+	        Method convert = clazz.getMethod("convert", ResultSet.class);
 
 			columnInfos = ColumnInfo.createColumnInfo(result.getMetaData());
 
 			while(result.next()){
-				data.add(new DummyBean(result.getInt("ID"), result.getString("FULL_NAME"),result.getInt("MONEY")));
+
+				Object obj = convert.invoke(dao, result);
+				data.add(obj);
 			}
 
 	        conn.close();
 
 		}catch(SQLException | UnsupportedDataTypeException e){
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
 
@@ -95,8 +143,8 @@ public class LogicDummy implements LogicInterface<DummyBean> {
 
 
 	@Override
-	public void setCell(TableColumn<DummyBean, String> column, String columnName) {
-		column.setCellValueFactory(new PropertyValueFactory<DummyBean,String>(columnName));
+	public void setCell(TableColumn<Object, String> column, String columnName) {
+		column.setCellValueFactory(new PropertyValueFactory<Object,String>(columnName));
 	}
 
 	@Override

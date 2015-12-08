@@ -2,6 +2,7 @@ package sql2bean.sql;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.sql.PreparedStatement;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -64,6 +65,14 @@ public class SQLAnalyzer {
 		}
 
 		return lstParameter = result.values().stream().collect(Collectors.toList());
+	}
+
+	public void setParameter(PreparedStatement statement) throws SQLException{
+		for (SQLKeyValue param: lstParameter){
+			for (Integer index: param.getParamNos()){
+				statement.setObject(index, param.getValue(), param.getType().getType());
+			}
+		}
 	}
 
 	/**

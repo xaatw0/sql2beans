@@ -2,6 +2,7 @@ package sql2bean.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.PreparedStatement;
 
 public class SelectSQLData implements ISQLSelect<SelectSQLData.Data>{
 

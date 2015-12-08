@@ -5,6 +5,8 @@ import static org.hamcrest.MatcherAssert.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -100,4 +102,19 @@ public class BeanMakerTest {
 
 	}
 
+
+	@Test
+	public void リフレクションのテスト() throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException{
+
+		Class clazz = testclass.class;
+		Method method = clazz.getMethod("convert", ResultSet.class);
+		assertThat(method, is(not(nullValue())));
+
+	}
+
+	public class testclass{
+
+		public void convert(ResultSet result) throws SQLException {
+		}
+	}
 }
