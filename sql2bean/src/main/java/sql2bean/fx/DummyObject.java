@@ -8,17 +8,23 @@ import javafx.beans.property.StringProperty;
 public class DummyObject {
 	private IntegerProperty id = new SimpleIntegerProperty();
 	private StringProperty name = new SimpleStringProperty();
+	private IntegerProperty money = new SimpleIntegerProperty();
 
-	public IntegerProperty id(){ return id;}
-	public int getId(){return id().get();}
-	public void setId(int id){ id().set(id);}
+	public IntegerProperty idProperty(){ return id;}
+	public int getId(){return idProperty().get();}
+	public void setId(int id){ idProperty().set(id);}
 
-	public StringProperty name(){return name;}
-	public String getName(){ return name().get();}
-	public void setName(String name){ name().set(name);}
+	public StringProperty fullNameProperty(){return name;}
+	public String getFullName(){ return fullNameProperty().get();}
+	public void setFullName(String name){ fullNameProperty().set(name);}
 
-	public DummyObject(int id, String name){
+	public IntegerProperty moneyProperty(){ return money;}
+	public int getMoney(){return moneyProperty().get();}
+	public void setMoney(int id){ moneyProperty().set(id);}
+
+	public DummyObject(int id, String name, int moeny){
 		setId(id);
-		setName(name);
+		setFullName(name);
+		setMoney(moeny);
 	}
 }

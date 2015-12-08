@@ -145,7 +145,7 @@ public class FXController implements Initializable{
 
         TableColumn column = new TableColumn(columnName);
         column.setMinWidth(130);
-        logic.setCell(column, columnName);
+        column.setCellValueFactory(new PropertyValueFactory<DummyObject,String>(columnName));
         table.getColumns().add(column);
     }
 }

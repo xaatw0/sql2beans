@@ -16,8 +16,11 @@ import javax.activation.UnsupportedDataTypeException;
 
 import sql2bean.beans.SQLKeyValue;
 import sql2bean.sql.ColumnInfo;
+import sql2bean.sql.SQLAnalyzer;
 
 public class LogicDummy implements LogicInterface<DummyObject> {
+
+	private SQLAnalyzer analyzer = new SQLAnalyzer();
 
 	private ResultSetMetaData metaData;
 
@@ -43,13 +46,14 @@ public class LogicDummy implements LogicInterface<DummyObject> {
 	        statement.execute("INSERT INTO USER VALUES(2,'test2', 200);");
 	        statement.execute("INSERT INTO USER VALUES(3,'test3', 300);");
 
-	        ResultSet result = statement.executeQuery("SELECT ID,NAME, MONEY FROM USER ORDER BY ID;");
+	        //ResultSet result = statement.executeQuery("SELECT ID,FULL_NAME, MONEY FROM USER ORDER BY ID;");
+	        ResultSet result = statement.executeQuery("SELECT ID,FULL_NAME, MONEY FROM USER ORDER BY ID;");
 			metaData = result.getMetaData();
 
 			columnInfos = ColumnInfo.createColumnInfo(result.getMetaData());
 
 			while(result.next()){
-				data.add(new DummyObject(result.getInt("ID"), result.getString("NAME")));
+				data.add(new DummyObject(result.getInt("ID"), result.getString("FULL_NAME"),result.getInt("MONEY")));
 			}
 
 	        conn.close();
@@ -97,7 +101,7 @@ public class LogicDummy implements LogicInterface<DummyObject> {
 
 	@Override
 	public void analize(String sql, ObservableList<SQLKeyValue> args) {
-		// TODO 自動生成されたメソッド・スタブ
+
 
 	}
 
