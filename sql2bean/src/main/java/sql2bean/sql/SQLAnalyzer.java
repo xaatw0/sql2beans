@@ -167,7 +167,7 @@ public class SQLAnalyzer {
 		context.put("bean_name", className);
 		context.put("originalSql", getOriginalSql());
 		context.put("preparedSql", getPreparedSql());
-		context.put("extendInfo", type == ISQLType.NONE ? "" : " implements " + type.getClassName());
+		context.put("extendInfo", type == ISQLType.NONE ? "" : " implements " + type.getClassName() + "<" +  className + ".Data>");
 		context.put("getOverride", type == ISQLType.NONE ? "" : System.lineSeparator() + "\t@Override");
 
 		StringWriter writer = new StringWriter();
