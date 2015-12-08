@@ -24,7 +24,7 @@ public class SelectSQLData implements ISQLSelect<SelectSQLData.Data>{
 
 #end
 	public class Data{
-#foreach ($data in $list)
+#foreach ($data in $resultFormat)
 
 		// $data.key
 		private $data.type $data.keyAsCamelName;
@@ -38,7 +38,7 @@ public class SelectSQLData implements ISQLSelect<SelectSQLData.Data>{
 
 		Data data = new Data();
 
-#foreach ($data in $list)
+#foreach ($data in $resultFormat)
 		data.set${data.keyAsPascalName}(result.get${data.type.ClassName}(${velocityCount}));
 #end
 

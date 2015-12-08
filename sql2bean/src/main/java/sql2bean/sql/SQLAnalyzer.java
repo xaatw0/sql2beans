@@ -162,6 +162,7 @@ public class SQLAnalyzer {
 
 		VelocityContext context = new VelocityContext();
 		context.put("list", getParameterFormat());
+		context.put("resultFormat", getResultFormat());
 		context.put("package_name", packageName);
 		context.put("bean_name", className);
 		context.put("originalSql", getOriginalSql());
