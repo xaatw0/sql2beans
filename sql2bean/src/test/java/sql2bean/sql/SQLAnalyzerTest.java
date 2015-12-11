@@ -80,6 +80,15 @@ public class SQLAnalyzerTest {
 	}
 
 	@Test
+	public void sqlChange(){
+
+		String target = "aaa\taaa\r\naaa";
+
+		Matcher matcher = Pattern.compile("[\\t\\n\\r]+").matcher(target);
+		assertThat(matcher.replaceAll(" "), is("aaa aaa aaa"));
+	}
+
+	@Test
 	public void analyze_simple() {
 
 		List<SQLKeyValue> result = target.analyze("${ID}");

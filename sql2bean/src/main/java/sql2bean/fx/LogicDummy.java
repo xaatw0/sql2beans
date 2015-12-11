@@ -59,6 +59,8 @@ public class LogicDummy implements LogicInterface<Object> {
 	        params.get(0).setValue("1");
 	        params.get(0).setType(DataType.Integer);
 
+	        String test = analyzer.writeSelectBean("testpackage", "testclass", ISQLType.NONE);
+
 	        PreparedStatement preparedStatement = conn.prepareStatement(analyzer.getPreparedSql());
 	        analyzer.setParameter(preparedStatement);
 	        ResultSet result = preparedStatement.executeQuery();

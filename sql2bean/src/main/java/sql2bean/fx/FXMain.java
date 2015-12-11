@@ -9,17 +9,10 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-import org.h2.tools.Server;
-
-import sql2bean.beanmaker.BeanMaker;
-
 
 public class FXMain<T> extends Application {
 
-	/**
-	 * DBサーバー
-	 */
-	Server server;
+	FXController controller;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -36,13 +29,7 @@ public class FXMain<T> extends Application {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
-			// データベースを起動
-			server = Server.createTcpServer().start();
-
-			Class.forName("org.h2.Driver");
-
-			// Velocityの初期化
-	        BeanMaker.init();
+			controller = loader.getController();
 
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -51,7 +38,7 @@ public class FXMain<T> extends Application {
 
     @Override
     public void stop() {
-		server.stop();
+    	controller.shutdown();
     }
 
 	public static void main(String[] args) {

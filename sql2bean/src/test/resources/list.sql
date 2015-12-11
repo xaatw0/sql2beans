@@ -1,0 +1,6 @@
+insert into PACKAGE(PACKAGE_NAME,FOLDER) values (${PACKAGE_NAME},${FOLDER});
+
+insert into SQL(PACKAGE_ID, NAME, STATEMENT) values (${PACKAGE_ID}, ${NAME}, ${STATEMENT})
+
+insert into PARAMETER(KEYWORD, DATA, DATA_TYPE) valeus (${KEYWORD}, ${DATA}, ${DATA_TYPE})
+

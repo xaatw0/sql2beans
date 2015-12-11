@@ -1,11 +1,17 @@
 package sql2bean.fx;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -14,6 +20,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -24,13 +32,22 @@ import javafx.scene.control.cell.TextFieldTableCell;
 
 import javax.activation.UnsupportedDataTypeException;
 
+import org.h2.tools.Server;
+
+import sql2bean.beanmaker.BeanMaker;
 import sql2bean.beans.SQLKeyValue;
+import sql2bean.dao.ISQLType;
 import sql2bean.sql.ColumnInfo;
 import sql2bean.sql.DataType;
 import sql2bean.sql.SQLAnalyzer;
 
 public class FXController implements Initializable{
 
+	/** DBサーバー*/
+	Server server;
+
+	/** DBコネクション*/
+	Connection conn;
 
 	private LogicInterface logic;
 
@@ -66,11 +83,20 @@ public class FXController implements Initializable{
 	/** SQLを実行するボタン */
 	@FXML private Button btnExecute;
 
+	@FXML private Button btnExport;
+
 	/** SQLを保存するボタン */
 	@FXML private Button btnSave;
 
 	/** SQLを呼び出すボタン */
 	@FXML private Button btnLoad;
+
+	private boolean blnQuery = false;
+
+	@FXML private Label lblStatementType;
+
+	@FXML private ComboBox cmbPackage;
+	@FXML private Button btnPackage;
 
 	private StringProperty sql = new SimpleStringProperty(txtSql, "");
 	public StringProperty sql(){
@@ -85,6 +111,7 @@ public class FXController implements Initializable{
 		return sql().get();
 	}
 
+	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		logic = new LogicDummy();
 		args = FXCollections.observableArrayList();
@@ -106,6 +133,42 @@ public class FXController implements Initializable{
 		colValue.setCellFactory(TextFieldTableCell.forTableColumn());
 
 		sql().bind(txtSql.textProperty());
+
+		startup();
+	}
+
+	public void startup(){
+		// Velocityの初期化
+        BeanMaker.init();
+
+		// データベースを起動
+		try {
+			server = Server.createTcpServer().start();
+			Class.forName("org.h2.Driver");
+	        conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+
+	        Statement statement = conn.createStatement();
+
+	        InputStream stream = getClass().getResourceAsStream("CreateTable.sql");
+	        byte[] data = new byte[stream.available()];
+	        stream.read(data);
+	        String createTable = new String(data);
+	        statement.execute(createTable);
+
+		} catch (SQLException | ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+			Platform.exit();
+		}
+
+	}
+
+	public void shutdown(){
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		server.shutdown();
 	}
 
 	@FXML
@@ -126,6 +189,11 @@ public class FXController implements Initializable{
 
 		args.addAll(analyzer.analyze(sql.get()));
 		analyzer.copyOldData(priviousData);
+	}
+
+	@FXML
+	public void export(ActionEvent event){
+		String source = analyzer.writeExecuteBean("testpackage", "testclass", ISQLType.ISQLExecute);
 	}
 
 	@FXML

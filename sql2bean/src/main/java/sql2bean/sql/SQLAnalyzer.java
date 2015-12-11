@@ -25,7 +25,9 @@ import sql2bean.beans.SQLKeyValue;
 import sql2bean.dao.ISQLType;
 
 public class SQLAnalyzer {
-	private Pattern ptnArgument = Pattern.compile("\\$\\{([^)]*?)\\}");
+	private static Pattern ptnArgument = Pattern.compile("\\$\\{([^)]*?)\\}");
+
+	private static Pattern ptnSql = Pattern.compile("[\\t\\n\\r]+");
 
 	private String originalSql = null;
 
@@ -43,10 +45,12 @@ public class SQLAnalyzer {
 	 */
 	public List<SQLKeyValue> analyze(String sql){
 
-		originalSql = sql;
-		preparedSql = ptnArgument.matcher(sql).replaceAll("?");
+		String sqlWithoutTags = ptnSql.matcher(sql).replaceAll(" ");
 
-		Matcher matcher = ptnArgument.matcher(sql);
+		originalSql = sqlWithoutTags;
+		preparedSql = ptnArgument.matcher(sqlWithoutTags).replaceAll("?");
+
+		Matcher matcher = ptnArgument.matcher(sqlWithoutTags);
 
 		Map<String, SQLKeyValue> result = new LinkedHashMap<>();
 		int index = 1;
