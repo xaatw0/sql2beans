@@ -12,6 +12,10 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -35,6 +39,7 @@ import javax.activation.UnsupportedDataTypeException;
 import org.h2.tools.Server;
 
 import sql2bean.beanmaker.BeanMaker;
+import sql2bean.beans.PackageBean;
 import sql2bean.beans.SQLKeyValue;
 import sql2bean.dao.ISQLType;
 import sql2bean.sql.ColumnInfo;
@@ -95,8 +100,12 @@ public class FXController implements Initializable{
 
 	@FXML private Label lblStatementType;
 
-	@FXML private ComboBox cmbPackage;
+	private ObservableList<PackageBean> lstPackage;
+	@FXML private ComboBox<PackageBean> cmbPackage;
 	@FXML private Button btnPackage;
+
+	/** パッケージのコンボボックスの編集可能を切り替える */
+	private BooleanProperty blnEditablePackage = new SimpleBooleanProperty(false);
 
 	private StringProperty sql = new SimpleStringProperty(txtSql, "");
 	public StringProperty sql(){
@@ -133,6 +142,19 @@ public class FXController implements Initializable{
 		colValue.setCellFactory(TextFieldTableCell.forTableColumn());
 
 		sql().bind(txtSql.textProperty());
+
+
+
+		ObjectProperty<PackageBean> selectedPackage = new SimpleObjectProperty<>();
+		selectedPackage.bind(cmbPackage.getSelectionModel().selectedItemProperty());
+		blnEditablePackage.bind(selectedPackage.isEqualTo(PackageBean.NEW_PACKAGE));
+		// x blnEditablePackage.bind(cmbPackage.getSelectionModel().selectedItemProperty().get().sqlIdProperty().isEqualTo(PackageBean.INITIALIZED));
+		cmbPackage.setConverter(new PackageBean.ComboboxMenuConverter() );
+
+		lstPackage = FXCollections.observableArrayList();
+		cmbPackage.setItems(lstPackage);
+		cmbPackage.editableProperty().bind(blnEditablePackage);
+		lstPackage.add(PackageBean.NEW_PACKAGE);
 
 		startup();
 	}
@@ -215,5 +237,10 @@ public class FXController implements Initializable{
         column.setMinWidth(130);
         column.setCellValueFactory(new PropertyValueFactory<DummyObject,String>(columnName));
         table.getColumns().add(column);
+    }
+
+    @FXML
+    public void btnAddPackagePressed(ActionEvent e){
+    	PackageBean selected = cmbPackage.getSelectionModel().getSelectedItem();
     }
 }

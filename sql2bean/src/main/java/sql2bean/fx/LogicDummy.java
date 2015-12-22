@@ -9,7 +9,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 
 import javafx.collections.FXCollections;
@@ -23,7 +22,6 @@ import sql2bean.beanmaker.BeanMaker;
 import sql2bean.beans.SQLKeyValue;
 import sql2bean.dao.ISQLType;
 import sql2bean.sql.ColumnInfo;
-import sql2bean.sql.DataType;
 import sql2bean.sql.SQLAnalyzer;
 
 public class LogicDummy implements LogicInterface<Object> {
@@ -47,17 +45,7 @@ public class LogicDummy implements LogicInterface<Object> {
 	        Connection conn = DriverManager.
 	            getConnection("jdbc:h2:~/test", "sa", "");
 
-	        Statement statement = conn.createStatement();
-	        statement.execute("DROP TABLE IF EXISTS USER;");
-	        statement.execute("CREATE TABLE USER (ID int, FULL_NAME VARCHAR(50), MONEY int);");
-	        statement.execute("INSERT INTO USER VALUES(1,'test1', 100);");
-	        statement.execute("INSERT INTO USER VALUES(2,'test2', 200);");
-	        statement.execute("INSERT INTO USER VALUES(3,'test3', 300);");
-
 	        List<SQLKeyValue> params = analyzer.analyze(sql);
-	        params.get(0).addParameter(1);
-	        params.get(0).setValue("1");
-	        params.get(0).setType(DataType.Integer);
 
 	        String test = analyzer.writeSelectBean("testpackage", "testclass", ISQLType.NONE);
 
