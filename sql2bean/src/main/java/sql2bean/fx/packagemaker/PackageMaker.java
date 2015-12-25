@@ -6,23 +6,26 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import sql2bean.beans.PackageBean;
 
 
 public class PackageMaker extends Application {
-
-	private final String FXML_NAME = "PackageMaker.fxml";
 
 	@Override
 	public void start(Stage primaryStage) {
 		try {
 
 			FXMLLoader loader = new FXMLLoader();
-			loader.load(getClass().getResource(FXML_NAME).openStream());
+			loader.load(getClass().getResourceAsStream(PackageMakerController.FXML_NAME));
+			PackageMakerController controller = (PackageMakerController)loader.getController();
+
 			Pane root = loader.getRoot();
 			Scene scene = new Scene(root);
 
 			primaryStage.setScene(scene);
 			primaryStage.show();
+
+			PackageBean bean = controller.getSelectedPackage();
 
 		} catch(Exception e) {
 			e.printStackTrace();
