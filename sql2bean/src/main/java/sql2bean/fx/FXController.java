@@ -215,7 +215,7 @@ public class FXController implements Initializable{
 
 	@FXML
 	public void export(ActionEvent event){
-		String source = analyzer.writeExecuteBean("testpackage", "testclass", ISQLType.ISQLExecute);
+		String source = analyzer.writeExecuteBean("testpackage", "testclass", ISQLType.ISQLSelect);
 	}
 
 	@FXML

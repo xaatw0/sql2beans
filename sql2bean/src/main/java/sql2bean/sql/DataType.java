@@ -16,8 +16,10 @@ public enum DataType {
 	/** 文字型 */
 	String(String.class, Types.VARCHAR),
 	/** 数字型 */
-	Integer(Integer.class, Types.INTEGER, Types.SMALLINT),
-	/** 日付型*/
+	Integer(Integer.class, Types.INTEGER),
+	/** 数字型 */
+	Short(Short.class, Types.SMALLINT),
+	/** 日時型*/
 	Timestamp(Timestamp.class, Types.TIMESTAMP),
 	/** 日付型*/
 	Date(Date.class, Types.DATE),
