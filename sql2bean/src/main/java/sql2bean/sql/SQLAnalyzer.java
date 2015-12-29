@@ -2,6 +2,7 @@ package sql2bean.sql;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -62,6 +63,43 @@ public class SQLAnalyzer {
 			if (value == null){
 				value = new SQLKeyValue(key);
 				result.put(key, value);
+			}
+
+			value.addParameter(index);
+			index++;
+		}
+
+		return lstParameter = result.values().stream().collect(Collectors.toList());
+	}
+
+	public List<SQLKeyValue> analyze(String sql, PreparedStatement statement) throws SQLException{
+
+		String sqlWithoutTags = ptnSql.matcher(sql).replaceAll(" ");
+
+		originalSql = sqlWithoutTags;
+		preparedSql = ptnArgument.matcher(sqlWithoutTags).replaceAll("?");
+
+		ParameterMetaData parameterMetaData = statement.getParameterMetaData();
+		Map<String, SQLKeyValue> result = new LinkedHashMap<>();
+
+		Matcher matcher = ptnArgument.matcher(sqlWithoutTags);
+
+		int index = 1;
+		while(matcher.find()){
+
+			String key = matcher.group(1);
+
+			SQLKeyValue value = result.get(key);
+			if (value == null){
+				value = new SQLKeyValue(key);
+
+				int sqlType = parameterMetaData.getParameterType(index);
+				Optional<DataType> type =
+						Arrays.stream(DataType.values())
+						.filter(p->p.getValueStream().anyMatch(q -> q == sqlType))
+						.findFirst();
+
+				//result.put(key, parameterMetaData.getParameterType(index));
 			}
 
 			value.addParameter(index);
