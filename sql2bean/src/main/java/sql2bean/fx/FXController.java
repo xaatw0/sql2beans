@@ -42,6 +42,7 @@ import sql2bean.beanmaker.BeanMaker;
 import sql2bean.beans.PackageBean;
 import sql2bean.beans.SQLKeyValue;
 import sql2bean.dao.ISQLType;
+import sql2bean.fx.packagemaker.PackageMaker;
 import sql2bean.sql.ColumnInfo;
 import sql2bean.sql.DataType;
 import sql2bean.sql.SQLAnalyzer;
@@ -241,6 +242,17 @@ public class FXController implements Initializable{
 
     @FXML
     public void btnAddPackagePressed(ActionEvent e){
+
     	PackageBean selected = cmbPackage.getSelectionModel().getSelectedItem();
+
+
+
+    	PackageBean bean =
+    			FXMain.getInstance().openPanel(PackageMaker.class.getResourceAsStream("PackageMaker.fxml"), selected);
+
+    	if (bean != null){
+    		lstPackage.add(bean);
+    		cmbPackage.getSelectionModel().select(bean);
+    	}
     }
 }

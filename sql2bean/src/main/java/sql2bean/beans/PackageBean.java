@@ -23,10 +23,10 @@ public class PackageBean {
 	public void setPackageName(String packageName){packageNameProperty().set(packageName);}
 	public String getPackageName() {return packageNameProperty().get();}
 
-	private StringProperty folder = new SimpleStringProperty();
-	public StringProperty folderProperty() {return folder;}
-	public void setFolder(String folder){folderProperty().set(folder);}
-	public String getFolder() {return folderProperty().get();}
+	private StringProperty directoryPath = new SimpleStringProperty();
+	public StringProperty directoryPathProperty() {return directoryPath;}
+	public void setDirectoryPath(String directoryPath){directoryPathProperty().set(directoryPath);}
+	public String getDirectoryPath() {return directoryPathProperty().get();}
 
 	public static class ComboboxMenuConverter extends StringConverter<PackageBean>{
 

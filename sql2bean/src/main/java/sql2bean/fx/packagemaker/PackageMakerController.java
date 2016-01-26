@@ -11,8 +11,9 @@ import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import sql2bean.beans.PackageBean;
+import sql2bean.fx.IPanel;
 
-public class PackageMakerController implements Initializable{
+public class PackageMakerController implements Initializable, IPanel<PackageBean>{
 
 	@FXML private TextField txtPackage;
 
@@ -26,6 +27,9 @@ public class PackageMakerController implements Initializable{
 
 	@Override
 	public void initialize(URL paramURL, ResourceBundle paramResourceBundle) {
+		selectedPackage = new PackageBean();
+		selectedPackage.packageNameProperty().bindBidirectional(txtPackage.textProperty());
+		selectedPackage.directoryPathProperty().bindBidirectional(txtDirectory.textProperty());
 	}
 
 	@FXML
@@ -55,17 +59,16 @@ public class PackageMakerController implements Initializable{
 	    }
 	}
 
-	public void createNewPackage(){
-		setData(new PackageBean());
-	}
+	@Override
+	public PackageBean getData() {
 
-	public void setData(PackageBean data){
-
-    	selectedPackage.packageNameProperty().bindBidirectional(txtPackage.textProperty());
-    	selectedPackage.folderProperty().bindBidirectional(txtDirectory.textProperty());
-	}
-
-	public PackageBean getSelectedPackage(){
 		return isSave ? selectedPackage: null;
+	}
+
+	@Override
+	public void setData(PackageBean data) {
+
+		selectedPackage.packageNameProperty().set(data.getPackageName());
+		selectedPackage.directoryPathProperty().set(data.getDirectoryPath());
 	}
 }

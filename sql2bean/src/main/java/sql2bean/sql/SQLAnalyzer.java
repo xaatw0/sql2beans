@@ -2,6 +2,7 @@ package sql2bean.sql;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.sql.Connection;
 import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSetMetaData;
@@ -72,12 +73,14 @@ public class SQLAnalyzer {
 		return lstParameter = result.values().stream().collect(Collectors.toList());
 	}
 
-	public List<SQLKeyValue> analyze(String sql, PreparedStatement statement) throws SQLException{
+	public List<SQLKeyValue> analyze(String sql, Connection connection) throws SQLException{
 
 		String sqlWithoutTags = ptnSql.matcher(sql).replaceAll(" ");
 
 		originalSql = sqlWithoutTags;
 		preparedSql = ptnArgument.matcher(sqlWithoutTags).replaceAll("?");
+
+		PreparedStatement statement = connection.prepareStatement(preparedSql);
 
 		ParameterMetaData parameterMetaData = statement.getParameterMetaData();
 		Map<String, SQLKeyValue> result = new LinkedHashMap<>();
@@ -99,7 +102,9 @@ public class SQLAnalyzer {
 						.filter(p->p.getValueStream().anyMatch(q -> q == sqlType))
 						.findFirst();
 
-				//result.put(key, parameterMetaData.getParameterType(index));
+				SQLKeyValue keyValue = new SQLKeyValue(key);
+				keyValue.setType(type.get());
+				result.put(key, keyValue);
 			}
 
 			value.addParameter(index);

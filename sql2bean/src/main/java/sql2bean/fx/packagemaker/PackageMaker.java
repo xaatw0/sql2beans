@@ -25,7 +25,7 @@ public class PackageMaker extends Application {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
-			PackageBean bean = controller.getSelectedPackage();
+			PackageBean bean = controller.getData();
 
 		} catch(Exception e) {
 			e.printStackTrace();

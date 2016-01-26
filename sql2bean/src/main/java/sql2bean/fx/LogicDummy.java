@@ -45,7 +45,7 @@ public class LogicDummy implements LogicInterface<Object> {
 	        Connection conn = DriverManager.
 	            getConnection("jdbc:h2:~/test", "sa", "");
 
-	        List<SQLKeyValue> params = analyzer.analyze(sql);
+	        List<SQLKeyValue> params = analyzer.analyze(sql,conn);
 
 	        String test = analyzer.writeSelectBean("testpackage", "testclass", ISQLType.NONE);
 
