@@ -216,6 +216,7 @@ public class FXController implements Initializable{
 
 		tblResult.setItems(logic.execute(sql.getValue(), args));
 
+		tblResult.getColumns().removeAll(tblResult.getColumns());
 		for(ColumnInfo column: logic.getColumnInfo()){
 			addColumn(tblResult, column.getCamelName());
 		}

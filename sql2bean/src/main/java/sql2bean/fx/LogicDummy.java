@@ -59,6 +59,7 @@ public class LogicDummy implements LogicInterface<Object> {
 
 	        PreparedStatement preparedStatement = conn.prepareStatement(analyzer.getPreparedSql());
 	        analyzer.setParameter(preparedStatement);
+
 	        ResultSet result = preparedStatement.executeQuery();
 	        analyzer.analyze(result.getMetaData());
 
