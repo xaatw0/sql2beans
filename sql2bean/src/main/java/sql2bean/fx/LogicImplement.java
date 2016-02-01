@@ -1,17 +1,18 @@
 package sql2bean.fx;
 
 import java.sql.ResultSetMetaData;
+import java.util.List;
 
-import sql2bean.beans.SQLKeyValue;
-import sql2bean.sql.ColumnInfo;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
+import sql2bean.beans.SQLKeyValue;
+import sql2bean.sql.ColumnInfo;
 
 public class LogicImplement<T> implements LogicInterface<T> {
 
 
 	@Override
-	public ObservableList<T> execute(String sql) {
+	public ObservableList<T> execute(String sql, List<SQLKeyValue> lst) {
 		// TODO 自動生成されたメソッド・スタブ
 		return null;
 	}

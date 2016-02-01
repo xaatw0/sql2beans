@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,7 +38,7 @@ public class LogicDummy implements LogicInterface<Object> {
 	}
 
 	@Override
-	public ObservableList execute(String sql) {
+	public ObservableList execute(String sql, List<SQLKeyValue> lstArgs) {
 
 		ObservableList<Object> data = FXCollections.observableArrayList();
 
@@ -46,6 +47,13 @@ public class LogicDummy implements LogicInterface<Object> {
 	            getConnection("jdbc:h2:~/test", "sa", "");
 
 	        List<SQLKeyValue> params = analyzer.analyze(sql,conn);
+	        for (SQLKeyValue newData: params){
+
+	        	Optional<SQLKeyValue> inputData = lstArgs.stream().filter(p->p.getKey().equals(newData.getKey())).findFirst();
+	        	if(inputData.isPresent()){
+	        		newData.setValue(inputData.get().getValue());
+	        	}
+	        }
 
 	        String test = analyzer.writeSelectBean("testpackage", "testclass", ISQLType.NONE);
 

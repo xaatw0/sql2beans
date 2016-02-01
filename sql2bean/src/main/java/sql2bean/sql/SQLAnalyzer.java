@@ -102,9 +102,8 @@ public class SQLAnalyzer {
 						.filter(p->p.getValueStream().anyMatch(q -> q == sqlType))
 						.findFirst();
 
-				SQLKeyValue keyValue = new SQLKeyValue(key);
-				keyValue.setType(type.get());
-				result.put(key, keyValue);
+				value.setType(type.get());
+				result.put(key, value);
 			}
 
 			value.addParameter(index);

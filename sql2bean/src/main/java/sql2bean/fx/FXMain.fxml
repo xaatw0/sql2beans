@@ -36,6 +36,7 @@
                   <Label text="Package Name" />
                   <ComboBox fx:id="cmbPackage" prefHeight="23.0" prefWidth="173.0" />
                   <Button fx:id="btnPackage" mnemonicParsing="false" onAction="#btnAddPackagePressed" text="Add" />
+                  <Button fx:id="btnRemovePackage" mnemonicParsing="false" onAction="#btnRemovePackagePressed" text="Remove" />
                </children>
             </HBox>
          </children>
