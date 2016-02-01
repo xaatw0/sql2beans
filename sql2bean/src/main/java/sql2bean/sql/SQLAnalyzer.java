@@ -39,6 +39,8 @@ public class SQLAnalyzer {
 
 	private List<SQLKeyValue> lstResult;
 
+	private ISQLType isqlType;
+
 	/**
 	 * SQLを分析して、SQLKeyValueのリストを作成する。
 	 * プリペアステートメントの準備をする。更新系に使用する。
@@ -82,6 +84,10 @@ public class SQLAnalyzer {
 
 		PreparedStatement statement = connection.prepareStatement(preparedSql);
 
+		// 取得結果用のメタデータを分析して、更新系か取得系のSQLかを判断する
+		isqlType = statement.getMetaData() == null? ISQLType.ISQLExecute:ISQLType.ISQLSelect;
+
+		// パラメータの内容を取得する
 		ParameterMetaData parameterMetaData = statement.getParameterMetaData();
 		Map<String, SQLKeyValue> result = new LinkedHashMap<>();
 
@@ -102,9 +108,8 @@ public class SQLAnalyzer {
 						.filter(p->p.getValueStream().anyMatch(q -> q == sqlType))
 						.findFirst();
 
-				SQLKeyValue keyValue = new SQLKeyValue(key);
-				keyValue.setType(type.get());
-				result.put(key, keyValue);
+				value.setType(type.get());
+				result.put(key, value);
 			}
 
 			value.addParameter(index);
@@ -183,6 +188,10 @@ public class SQLAnalyzer {
 
 	public String getPreparedSql(){
 		return preparedSql;
+	}
+
+	public ISQLType getSqlType(){
+		return isqlType;
 	}
 
 	private final static String VM_NAME = "executeBean.vm";

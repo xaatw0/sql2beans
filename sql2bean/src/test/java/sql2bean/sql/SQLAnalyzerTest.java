@@ -183,7 +183,7 @@ public class SQLAnalyzerTest {
 
 			SQLKeyValue value2 = list.get(2);
 			assertThat(value2.getKey(), is("MONEY"));
-			assertThat(value2.getType(), is(DataType.Integer));
+			assertThat(value2.getType(), is(DataType.Short));
 			assertThat(value2.getValue(), is(nullValue()));
 
 		}catch(SQLException e){
@@ -356,7 +356,7 @@ public class SQLAnalyzerTest {
 		assertThat(list.get(1).getType(), is(DataType.String));
 
 		assertThat(list.get(2).getKey(), is("MONEY"));
-		assertThat(list.get(2).getType(), is(DataType.Integer));
+		assertThat(list.get(2).getType(), is(DataType.Short));
 
 		InputStream stream = getClass().getResourceAsStream("参照系引数無し.txt");
 		byte[] data = new byte[stream.available()];
@@ -411,7 +411,7 @@ public class SQLAnalyzerTest {
 		assertThat(list.get(1).getType(), is(DataType.String));
 
 		assertThat(list.get(2).getKey(), is("MONEY"));
-		assertThat(list.get(2).getType(), is(DataType.Integer));
+		assertThat(list.get(2).getType(), is(DataType.Short));
 
 		InputStream stream = getClass().getResourceAsStream("参照系引数2つ.txt");
 		byte[] data = new byte[stream.available()];

@@ -1,8 +1,6 @@
 package TestPackage;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.PreparedStatement;
+import java.sql.*;
 
 public class SelectSQLData{
 
@@ -35,9 +33,9 @@ public class SelectSQLData{
 		public String getFullName(){ return fullName;}
 
 		// MONEY
-		private Integer money;
-		public void setMoney(Integer money){ this.money = money;}
-		public Integer getMoney(){ return money;}
+		private Short money;
+		public void setMoney(Short money){ this.money = money;}
+		public Short getMoney(){ return money;}
 	}
 
 
@@ -47,7 +45,7 @@ public class SelectSQLData{
 
 		data.setId((Integer)result.getObject(1));
 		data.setFullName((String)result.getObject(2));
-		data.setMoney((Integer)result.getObject(3));
+		data.setMoney((Short)result.getObject(3));
 
 		return data;
 	}

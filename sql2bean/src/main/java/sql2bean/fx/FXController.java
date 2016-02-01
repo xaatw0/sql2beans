@@ -12,6 +12,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import javafx.application.Platform;
+import javafx.beans.binding.When;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -104,9 +105,17 @@ public class FXController implements Initializable{
 	private ObservableList<PackageBean> lstPackage;
 	@FXML private ComboBox<PackageBean> cmbPackage;
 	@FXML private Button btnPackage;
+	@FXML private Button btnRemovePackage;
+	private BooleanProperty isBtnPackageModeAdd = new SimpleBooleanProperty();
 
 	/** パッケージのコンボボックスの編集可能を切り替える */
 	private BooleanProperty blnEditablePackage = new SimpleBooleanProperty(false);
+
+	/** 「分析」ボタンが有効かどうか。 */
+	private BooleanProperty isBtnAnalyzeEnabled = new SimpleBooleanProperty();
+
+	/** 「分析」ボタンを押したときのSQL文*/
+	private StringProperty sqlWhenAnalyze = new SimpleStringProperty("INIT");
 
 	private StringProperty sql = new SimpleStringProperty(txtSql, "");
 	public StringProperty sql(){
@@ -144,17 +153,25 @@ public class FXController implements Initializable{
 
 		sql().bind(txtSql.textProperty());
 
+		// ボタンの有無効
+		isBtnAnalyzeEnabled.bind(sqlWhenAnalyze.isNotEqualTo(sql));
+		btnAnalyze.disableProperty().bind(isBtnAnalyzeEnabled.not());
+		btnExecute.disableProperty().bind(isBtnAnalyzeEnabled);
+		btnExport.disableProperty().bind(isBtnAnalyzeEnabled);
 
+		// パッケージボタンのタイトル(追加・編集)
+		isBtnPackageModeAdd.bind(cmbPackage.getSelectionModel().selectedItemProperty().isEqualTo(PackageBean.NEW_PACKAGE));
+		cmbPackage.getSelectionModel().select(PackageBean.NEW_PACKAGE);
+		btnPackage.textProperty().bind(new When(isBtnPackageModeAdd).then("Add").otherwise("Edit"));
+		btnRemovePackage.disableProperty().bind(isBtnPackageModeAdd);
 
 		ObjectProperty<PackageBean> selectedPackage = new SimpleObjectProperty<>();
 		selectedPackage.bind(cmbPackage.getSelectionModel().selectedItemProperty());
-		blnEditablePackage.bind(selectedPackage.isEqualTo(PackageBean.NEW_PACKAGE));
-		// x blnEditablePackage.bind(cmbPackage.getSelectionModel().selectedItemProperty().get().sqlIdProperty().isEqualTo(PackageBean.INITIALIZED));
+		//blnEditablePackage.bind(selectedPackage.isEqualTo(PackageBean.NEW_PACKAGE));
 		cmbPackage.setConverter(new PackageBean.ComboboxMenuConverter() );
 
 		lstPackage = FXCollections.observableArrayList();
 		cmbPackage.setItems(lstPackage);
-		cmbPackage.editableProperty().bind(blnEditablePackage);
 		lstPackage.add(PackageBean.NEW_PACKAGE);
 
 		startup();
@@ -197,21 +214,24 @@ public class FXController implements Initializable{
 	@FXML
 	public void execute(ActionEvent event) throws UnsupportedDataTypeException, SQLException{
 
-		tblResult.setItems(logic.execute(sql.getValue()));
+		tblResult.setItems(logic.execute(sql.getValue(), args));
 
+		tblResult.getColumns().removeAll(tblResult.getColumns());
 		for(ColumnInfo column: logic.getColumnInfo()){
 			addColumn(tblResult, column.getCamelName());
 		}
 	}
 
 	@FXML
-	public void analyze(ActionEvent event){
+	public void analyze(ActionEvent event) throws SQLException{
 		// 現在の設定値を記録するしてから、表を初期化する
 		List<SQLKeyValue> priviousData = args.stream().collect(Collectors.toList());
 		args.clear();
 
-		args.addAll(analyzer.analyze(sql.get()));
+		args.addAll(analyzer.analyze(sql.get(),conn));
 		analyzer.copyOldData(priviousData);
+
+		sqlWhenAnalyze.setValue(sql().get());
 	}
 
 	@FXML
@@ -244,9 +264,6 @@ public class FXController implements Initializable{
     public void btnAddPackagePressed(ActionEvent e){
 
     	PackageBean selected = cmbPackage.getSelectionModel().getSelectedItem();
-
-
-
     	PackageBean bean =
     			FXMain.getInstance().openPanel(PackageMaker.class.getResourceAsStream("PackageMaker.fxml"), selected);
 
@@ -254,5 +271,10 @@ public class FXController implements Initializable{
     		lstPackage.add(bean);
     		cmbPackage.getSelectionModel().select(bean);
     	}
+    }
+
+    @FXML
+    public void btnRemovePackagePressed(ActionEvent e){
+    	lstPackage.remove(cmbPackage.getSelectionModel().getSelectedItem());
     }
 }
