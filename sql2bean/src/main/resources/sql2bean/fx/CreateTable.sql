@@ -1,6 +1,14 @@
+drop table if exists APPLICATION;
 drop table if exists SQL;
 drop table if exists PACKAGE;
 drop table if exists PARAMETER;
+
+create table if not exists APPLICATION(
+	 APP_ID int identity primary key
+	,APP_NAME varchar(20)
+	,DB_NAME varchar(20)
+	,DB_CONNECTION varchar(50)
+);
 
 create table if not exists  SQL (
 	SQL_ID int identity primary key,
@@ -13,8 +21,9 @@ create table if not exists  SQL (
 
 create table if not exists PACKAGE (
 	PACKAGE_ID int identity primary key,
+	APP_ID int not null,
 	PACKAGE_NAME varchar(50) not null unique,
-	FOLDER varchar(50)
+	FOLDER varchar(100) not null
 );
 
 create table if not exists PARAMETER(

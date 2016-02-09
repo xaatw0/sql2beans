@@ -55,30 +55,42 @@ public class LogicDummy implements LogicInterface<Object> {
 	        	}
 	        }
 
-	        String test = analyzer.writeSelectBean("testpackage", "testclass", ISQLType.NONE);
-
 	        PreparedStatement preparedStatement = conn.prepareStatement(analyzer.getPreparedSql());
 	        analyzer.setParameter(preparedStatement);
 
-	        ResultSet result = preparedStatement.executeQuery();
-	        analyzer.analyze(result.getMetaData());
+	        // Select文かどうか
+	        boolean isSelectStatement = preparedStatement.getMetaData() != null;
 
-	        String source = analyzer.writeSelectBean("testpackage", "testclass", ISQLType.NONE);
+	        ResultSet result = null;
+	        if (isSelectStatement){
+	        	result = preparedStatement.executeQuery();
+		        analyzer.analyze(result.getMetaData());
+	        } else {
+	        	preparedStatement.executeUpdate();
+	        }
+
+	        // ソースを作成する
+	        String source = isSelectStatement
+	        		? analyzer.writeSelectBean("testpackage", "testclass", ISQLType.NONE)
+	        		: analyzer.writeExecuteBean("testpackage", "testclass", ISQLType.NONE);
+
 	        BeanMaker maker = new BeanMaker("target\\classes");
 	        maker.compile("testpackage.testclass", source);
 
-	        Class clazz = Class.forName("testpackage.testclass");
-	        Object dao = clazz.newInstance();
-	        Method convert = clazz.getMethod("convert", ResultSet.class);
+	        // select文は表に結果を表示する
+	        if (result != null){
+		        Class clazz = Class.forName("testpackage.testclass");
+		        Object dao = clazz.newInstance();
+		        Method convert = clazz.getMethod("convert", ResultSet.class);
 
-			columnInfos = ColumnInfo.createColumnInfo(result.getMetaData());
+				columnInfos = ColumnInfo.createColumnInfo(result.getMetaData());
 
-			while(result.next()){
+				while(result.next()){
 
-				Object obj = convert.invoke(dao, result);
-				data.add(obj);
-			}
-
+					Object obj = convert.invoke(dao, result);
+					data.add(obj);
+				}
+	        }
 	        conn.close();
 
 		}catch(SQLException | UnsupportedDataTypeException e){
