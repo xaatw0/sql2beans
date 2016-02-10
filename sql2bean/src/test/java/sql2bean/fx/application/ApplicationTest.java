@@ -33,7 +33,6 @@ public class ApplicationTest  extends Application {
 	        });
 
 	        injector.injectMembers(controller);
-	        dummy.load(1);
 
 			primaryStage.setScene(scene);
 			primaryStage.show();

@@ -8,13 +8,18 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
+import sql2bean.dao.table.ApplicationSelect;
+import sql2bean.dao.table.ApplicationSelect.Data;
+import sql2bean.fx.IPanel;
 
 import com.google.inject.Inject;
 
-public class ApplicationController implements Initializable{
+public class ApplicationController implements Initializable, IPanel<ApplicationSelect.Data>{
 
 	@Inject
 	private ApplicationLogic logic;
+
+	private ApplicationSelect.Data data;
 
 	@FXML
 	private TextField txtAppName;
@@ -31,7 +36,17 @@ public class ApplicationController implements Initializable{
 
 	@FXML
 	public void btnSaveClicked(ActionEvent event) throws SQLException{
-		logic.save(txtAppName.getText(), txtDbName.getText(), txtDbConnection.getText());
+
+		if (data == null){
+			data = new ApplicationSelect.Data();
+		}
+
+		data.setAppName(txtAppName.getText());
+		data.setDbName(txtDbName.getText());
+		data.setDbConnection(txtDbConnection.getText());
+
+		int id = logic.save(data);
+		data.setAppId(id);
 	}
 
 	@FXML
@@ -41,6 +56,16 @@ public class ApplicationController implements Initializable{
 
 	@FXML
 	public void btnDeleteClicked(ActionEvent event) throws SQLException{
-		logic.delete();
+		logic.delete(data);
+	}
+
+	@Override
+	public Data getData() {
+		return data;
+	}
+
+	@Override
+	public void setData(Data data) {
+		this.data = data;
 	}
 }

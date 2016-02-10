@@ -37,22 +37,36 @@ public class ApplicationLogicImplTest {
 		assertThat(conn, is(notNullValue()));
 
 		ApplicationLogic logic = new ApplicationLogicImpl(conn);
-		int id = logic.save("name", "dbName", "dbConnection");
 
-		ApplicationSelect.Data data = logic.load(id);
+		// データを挿入
+		ApplicationSelect.Data data = new ApplicationSelect.Data();
+		data.setAppName("name");
+		data.setDbName("dbName");
+		data.setDbConnection("dbConnection");
+		int id = logic.save(data);
+
+		// 内容を確認
+		data = logic.select().stream().filter(p-> p.getAppId().equals(id)).findAny().get();
 		assertThat(data.getAppId(), is(id));
 		assertThat(data.getAppName(), is("name"));
 		assertThat(data.getDbName(), is("dbName"));
 		assertThat(data.getDbConnection(), is("dbConnection"));
 
-		logic.save("name1", "dbName2", "dbConnection3");
-		data = logic.load(id);
+		// データを更新
+		data.setAppName("name1");
+		data.setDbName("dbName2");
+		data.setDbConnection("dbConnection3");
+		logic.save(data);
+
+		// 更新内容を確認
+		data = logic.select().stream().filter(p-> p.getAppId().equals(id)).findAny().get();
 		assertThat(data.getAppId(), is(id));
 		assertThat(data.getAppName(), is("name1"));
 		assertThat(data.getDbName(), is("dbName2"));
 		assertThat(data.getDbConnection(), is("dbConnection3"));
 
-		logic.delete();
-		assertThat(logic.load(id), is(nullValue()));
+		// 削除して、削除されたことを確認
+		logic.delete(data);
+		assertThat(logic.select().stream().filter(p-> p.getAppId().equals(id)).findAny().isPresent(), is(false));
 	}
 }

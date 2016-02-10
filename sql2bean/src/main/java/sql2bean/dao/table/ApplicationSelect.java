@@ -17,12 +17,10 @@ public class ApplicationSelect {
 		return SQL_STATEMENT;
 	}
 
-
-
 	public void setParameters(PreparedStatement preparedStatement) throws SQLException{
 	}
 
-	public class Data{
+	public static class Data{
 
 		// APP_ID
 		private Integer appId;
