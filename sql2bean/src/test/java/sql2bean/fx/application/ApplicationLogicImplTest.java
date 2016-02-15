@@ -3,70 +3,89 @@ package sql2bean.fx.application;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-import java.sql.Connection;
+import java.io.IOException;
 import java.sql.SQLException;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import sql2bean.dao.table.ApplicationSelect;
+import sql2bean.dao.table.ApplicationSelect.Data;
+import sql2bean.db.DBInfo;
+import sql2bean.db.IDBInfo;
+import sql2bean.db.IMainDB;
 import sql2bean.db.TestDB;
 
 public class ApplicationLogicImplTest {
 
-	private Connection conn;
+	private IDBInfo info;
+
+	private IMainDB db;
 
 	@Before
 	public void tearUp(){
-		conn = TestDB.open().getConnection();
+		info = new DBInfo(db = TestDB.open());
 	}
 
 	@After
-	public void tearDown() throws SQLException{
+	public void tearDown() throws SQLException, IOException{
 
-		if (conn != null){
-			conn.close();
-			conn = null;
-		}
+		db.close();
 	}
 
 	@Test
 	public void load() throws SQLException {
 
-		assertThat(conn, is(notNullValue()));
-
-		ApplicationLogic logic = new ApplicationLogicImpl(conn);
+		assertThat(db, is(notNullValue()));
+		assertThat(info, is(notNullValue()));
 
 		// データを挿入
-		ApplicationSelect.Data data = new ApplicationSelect.Data();
-		data.setAppName("name");
-		data.setDbName("dbName");
-		data.setDbConnection("dbConnection");
-		int id = logic.save(data);
+		ApplicationLogic logic = new ApplicationLogicImpl(info);
+		logic.appName().set("name");
+		logic.dbName().set("dbName");
+		logic.dbConnection().set("dbConnection");
+		int id = logic.save();
 
 		// 内容を確認
-		data = logic.select().stream().filter(p-> p.getAppId().equals(id)).findAny().get();
+		Data data = info.selectApplication().stream().filter(p-> p.getAppId().equals(id)).findAny().get();
 		assertThat(data.getAppId(), is(id));
 		assertThat(data.getAppName(), is("name"));
 		assertThat(data.getDbName(), is("dbName"));
 		assertThat(data.getDbConnection(), is("dbConnection"));
 
 		// データを更新
-		data.setAppName("name1");
-		data.setDbName("dbName2");
-		data.setDbConnection("dbConnection3");
-		logic.save(data);
+		logic.appName().set("name1");
+		logic.dbName().set("dbName2");
+		logic.dbConnection().set("dbConnection3");
+		logic.save();
 
 		// 更新内容を確認
-		data = logic.select().stream().filter(p-> p.getAppId().equals(id)).findAny().get();
+		data = info.selectApplication().stream().filter(p-> p.getAppId().equals(id)).findAny().get();
 		assertThat(data.getAppId(), is(id));
 		assertThat(data.getAppName(), is("name1"));
 		assertThat(data.getDbName(), is("dbName2"));
 		assertThat(data.getDbConnection(), is("dbConnection3"));
 
 		// 削除して、削除されたことを確認
-		logic.delete(data);
-		assertThat(logic.select().stream().filter(p-> p.getAppId().equals(id)).findAny().isPresent(), is(false));
+		logic.delete();
+		assertThat(info.selectApplication().stream().filter(p-> p.getAppId().equals(id)).findAny().isPresent(), is(false));
+	}
+
+	@Test
+	public void set() throws SQLException{
+
+		ApplicationLogic logic = new ApplicationLogicImpl(info);
+		assertThat(logic.get(), is(nullValue()));
+
+		Data data = new Data();
+		data.setAppName("appName");
+		data.setDbName("dbName");
+		data.setDbConnection("dbConnection");
+
+		logic.set(data);
+		assertThat(logic.get(), is(notNullValue()));
+
+		logic.cancel();
+		assertThat(logic.get(), is(nullValue()));
 	}
 }

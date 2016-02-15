@@ -4,10 +4,14 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import sql2bean.dao.table.ApplicationSelect;
 import sql2bean.dao.table.ApplicationSelect.Data;
 import sql2bean.fx.IPanel;
@@ -19,8 +23,6 @@ public class ApplicationController implements Initializable, IPanel<ApplicationS
 	@Inject
 	private ApplicationLogic logic;
 
-	private ApplicationSelect.Data data;
-
 	@FXML
 	private TextField txtAppName;
 
@@ -30,42 +32,50 @@ public class ApplicationController implements Initializable, IPanel<ApplicationS
 	@FXML
 	private TextField txtDbConnection;
 
+	@FXML
+	private Button btnDelete;
+
+	private BooleanProperty blnBtnDeleteDisabled = new SimpleBooleanProperty(true);
+
 	@Override
 	public void initialize(URL paramURL, ResourceBundle paramResourceBundle) {
+		btnDelete.disableProperty().bind(blnBtnDeleteDisabled);
+
+		logic.appName().bind(txtAppName.textProperty());
+		logic.dbName().bind(txtDbName.textProperty());
+		logic.dbConnection().bind(txtDbConnection.textProperty());
 	}
 
 	@FXML
 	public void btnSaveClicked(ActionEvent event) throws SQLException{
-
-		if (data == null){
-			data = new ApplicationSelect.Data();
-		}
-
-		data.setAppName(txtAppName.getText());
-		data.setDbName(txtDbName.getText());
-		data.setDbConnection(txtDbConnection.getText());
-
-		int id = logic.save(data);
-		data.setAppId(id);
+		logic.save();
+		close();
 	}
 
 	@FXML
 	public void btnCancelClicked(ActionEvent event){
-		logic.cancel();
+		close();
 	}
 
 	@FXML
 	public void btnDeleteClicked(ActionEvent event) throws SQLException{
-		logic.delete(data);
+		logic.delete();
+		close();
 	}
 
 	@Override
 	public Data getData() {
-		return data;
+		return logic.get();
 	}
 
 	@Override
 	public void setData(Data data) {
-		this.data = data;
+
+		logic.set(data);
+		blnBtnDeleteDisabled.set(data == null);
+	}
+
+	private void close(){
+		((Stage) txtAppName.getScene().getWindow()).close();
 	}
 }

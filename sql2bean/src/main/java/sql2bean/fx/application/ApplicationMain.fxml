@@ -10,7 +10,7 @@
       <HBox alignment="CENTER" prefHeight="29.0" prefWidth="224.0" BorderPane.alignment="CENTER">
          <children>
             <Button alignment="TOP_CENTER" mnemonicParsing="false" onAction="#btnSaveClicked" prefHeight="23.0" prefWidth="56.0" text="保存" />
-            <Button mnemonicParsing="false" onAction="#btnDeleteClicked" text="削除" />
+            <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#btnDeleteClicked" text="削除" />
             <Button alignment="TOP_LEFT" mnemonicParsing="false" onAction="#btnCancelClicked" text="キャンセル" />
          </children>
       </HBox>

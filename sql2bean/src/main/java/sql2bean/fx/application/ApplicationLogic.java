@@ -1,18 +1,26 @@
 package sql2bean.fx.application;
 
 import java.sql.SQLException;
-import java.util.List;
 
+import javafx.beans.property.StringProperty;
 import sql2bean.dao.table.ApplicationSelect;
 
 public interface ApplicationLogic {
 
-	List<ApplicationSelect.Data> select() throws SQLException;
+	int save() throws SQLException;
 
-	int save(ApplicationSelect.Data data) throws SQLException;
-
-	void delete(ApplicationSelect.Data data) throws SQLException;
+	void delete() throws SQLException;
 
 	void cancel();
+
+	StringProperty appName();
+
+	StringProperty dbName();
+
+	StringProperty dbConnection();
+
+	void set(ApplicationSelect.Data data);
+
+	ApplicationSelect.Data get();
 
 }

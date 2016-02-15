@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -16,23 +17,34 @@ public class ApplicationTest  extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
+
+		ApplicationLogic dummy = new ApplicationLogicDummy();
+        Injector injector = Guice.createInjector(new AbstractModule() {
+            @Override protected void configure() {
+                bind(ApplicationLogic.class).toInstance(dummy);
+            }
+        });
+
+		Callback<Class<?>, Object> guiceControllerFactory = new Callback<Class<?>, Object>() {
+			  @Override
+			  public Object call(Class<?> clazz) {
+				  return injector.getInstance(clazz);
+			  }
+		};
+
 		try {
 
 			FXMLLoader loader = new FXMLLoader();
+			loader.setControllerFactory(guiceControllerFactory);
 			loader.load(ApplicationController.class.getResource(FXML_NAME).openStream());
-			BorderPane root = loader.getRoot();
-			Scene scene = new Scene(root);
-
-			ApplicationLogic dummy = new ApplicationLogicDummy();
 
 			ApplicationController controller = loader.getController();
-	        Injector injector = Guice.createInjector(new AbstractModule() {
-	            @Override protected void configure() {
-	                bind(ApplicationLogic.class).toInstance(dummy);
-	            }
-	        });
+;
 
 	        injector.injectMembers(controller);
+
+	        BorderPane root = loader.getRoot();
+			Scene scene = new Scene(root);
 
 			primaryStage.setScene(scene);
 			primaryStage.show();

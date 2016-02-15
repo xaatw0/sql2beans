@@ -1,87 +1,88 @@
 package sql2bean.fx.application;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
-import sql2bean.dao.table.ApplicationDelete;
-import sql2bean.dao.table.ApplicationInsert;
-import sql2bean.dao.table.ApplicationSelect;
-import sql2bean.dao.table.ApplicationUpdate;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import sql2bean.dao.table.ApplicationSelect.Data;
+import sql2bean.db.IDBInfo;
 
 public class ApplicationLogicImpl implements ApplicationLogic{
 
-	private Connection connection;
+	private IDBInfo db;
 
-	public ApplicationLogicImpl(Connection connection){
-		this.connection = connection;
+	private Data data;
+
+	private StringProperty appName = new SimpleStringProperty();
+
+	private StringProperty dbName = new SimpleStringProperty();
+
+	private StringProperty dbConnection = new SimpleStringProperty();
+
+	public ApplicationLogicImpl(IDBInfo db){
+		this.db = db;
 	}
 
 	@Override
-	public List<ApplicationSelect.Data> select() throws SQLException {
+	public int save() throws SQLException {
 
-		List<ApplicationSelect.Data> list = new ArrayList<>();
+		if (data == null){
 
-		ApplicationSelect select = new ApplicationSelect();
-		PreparedStatement statement = connection.prepareStatement(select.getSql());
-		ResultSet result = statement.executeQuery();
+			data = new Data();
+			init(data);
 
-		while(result.next()){
-			list.add(select.convert(result));
-		}
-
-		return list;
-	}
-
-	@Override
-	public int save(ApplicationSelect.Data data) throws SQLException {
-
-		if (data.getAppId() == null){
-			ApplicationInsert insert = new ApplicationInsert();
-
-			PreparedStatement statement = connection.prepareStatement(insert.getSql(),
-				    Statement.RETURN_GENERATED_KEYS);
-			insert.setAppName(data.getAppName());
-			insert.setDbName(data.getDbName());
-			insert.setDbConnection(data.getDbConnection());
-			insert.addBach(statement);
-			statement.executeBatch();
-
-			ResultSet tableKeys = statement.getGeneratedKeys();
-			tableKeys.next();
-			data.setAppId(tableKeys.getInt(1));
+			int id = db.insertApplication(data);
+			data.setAppId(id);
 
 		} else {
-			ApplicationUpdate update = new ApplicationUpdate();
-			PreparedStatement statement = connection.prepareStatement(update.getSql());
 
-			update.setAppId(data.getAppId());
-			update.setAppName(data.getAppName());
-			update.setDbName(data.getDbName());
-			update.setDbConnection(data.getDbConnection());
-			update.addBach(statement);
-			statement.executeBatch();
+			init(data);
+			db.updateApplication(data);
 		}
 
 		return data.getAppId();
 	}
 
-	@Override
-	public void cancel() {
+	private void init(Data data){
+		data.setAppName(appName.get());
+		data.setDbName(dbName.get());
+		data.setDbConnection(dbConnection.get());
 	}
 
 	@Override
-	public void delete(ApplicationSelect.Data data) throws SQLException {
+	public void cancel() {
+		data = null;
+	}
 
-		ApplicationDelete delete = new ApplicationDelete();
+	@Override
+	public void delete() throws SQLException {
 
-		PreparedStatement statement = connection.prepareStatement(delete.getSql());
-		delete.setAppId(data.getAppId());
-		delete.addBach(statement);
-		statement.executeBatch();
+		db.deleteApplication(data);
+	}
+
+	@Override
+	public StringProperty appName() {
+		return appName;
+	}
+
+	@Override
+	public StringProperty dbName() {
+		return dbName;
+	}
+
+	@Override
+	public StringProperty dbConnection() {
+		return dbConnection;
+	}
+
+	@Override
+	public void set(Data data) {
+
+		this.data = data;
+	}
+
+	@Override
+	public Data get() {
+		return data;
 	}
 }
