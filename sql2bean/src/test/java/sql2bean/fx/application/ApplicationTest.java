@@ -39,8 +39,6 @@ public class ApplicationTest  extends Application {
 			loader.load(ApplicationController.class.getResource(FXML_NAME).openStream());
 
 			ApplicationController controller = loader.getController();
-;
-
 	        injector.injectMembers(controller);
 
 	        BorderPane root = loader.getRoot();

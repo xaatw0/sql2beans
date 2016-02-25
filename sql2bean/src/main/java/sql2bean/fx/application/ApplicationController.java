@@ -18,6 +18,9 @@ import sql2bean.fx.IPanel;
 
 import com.google.inject.Inject;
 
+/**
+ * アプリケーション
+ */
 public class ApplicationController implements Initializable, IPanel<ApplicationSelect.Data>{
 
 	@Inject
@@ -35,6 +38,7 @@ public class ApplicationController implements Initializable, IPanel<ApplicationS
 	@FXML
 	private Button btnDelete;
 
+	/** ボタンの非有効化の設定。初期データがない場合、非有効化される*/
 	private BooleanProperty blnBtnDeleteDisabled = new SimpleBooleanProperty(true);
 
 	@Override
