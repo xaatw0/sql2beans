@@ -95,4 +95,9 @@ public class PackageMakerLogicImpl implements PackageMakerLogic {
 	public PackageSelect.Data get() {
 		return data;
 	}
+
+	@Override
+	public boolean delete() throws SQLException {
+		return db.deletePackage(data);
+	}
 }

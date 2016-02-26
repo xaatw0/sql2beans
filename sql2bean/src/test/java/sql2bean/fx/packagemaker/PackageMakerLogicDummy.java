@@ -51,5 +51,8 @@ public class PackageMakerLogicDummy implements PackageMakerLogic{
 		return appId;
 	}
 
-
+	@Override
+	public boolean delete() throws SQLException {
+		return false;
+	}
 }

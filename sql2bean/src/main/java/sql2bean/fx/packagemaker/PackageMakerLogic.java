@@ -18,6 +18,8 @@ public interface PackageMakerLogic {
 
 	int save() throws SQLException;
 
+	boolean delete() throws SQLException;
+
 	void set(Data data);
 
 	Data get();

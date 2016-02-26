@@ -98,9 +98,14 @@ public class PackageMakerLogicImplTest {
 		assertThat(data.getPackageName(), is("packageName2"));
 
 		// 削除して、削除されたことを確認
-		//logic.delete();
-		//assertThat(info.selectPackage().stream().filter(p-> p.getAppId().equals(id)).findAny().isPresent(), is(false));
+		data = result.stream().filter(p -> p.getPackageId().equals(id11)).findAny().get();
+		logic.set(data);
+		logic.delete();
 
+		result = info.selectPackage();
+		assertThat(result.size(), is(1));
+		assertThat(result.stream().filter(p -> p.getPackageId().equals(id11)).findAny().isPresent(), is(false));
+		assertThat(result.stream().filter(p -> p.getPackageId().equals(id22)).findAny().isPresent(), is(true));
 	}
 
 	@Test
