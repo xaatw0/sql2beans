@@ -1,7 +1,6 @@
-package sql2bean.dao;
+package TestPackage;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class SelectSQLData implements ISQLSelect<SelectSQLData.Data>{
 
@@ -46,9 +45,9 @@ public class SelectSQLData implements ISQLSelect<SelectSQLData.Data>{
 		public String getFullName(){ return fullName;}
 
 		// MONEY
-		private Integer money;
-		public void setMoney(Integer money){ this.money = money;}
-		public Integer getMoney(){ return money;}
+		private Short money;
+		public void setMoney(Short money){ this.money = money;}
+		public Short getMoney(){ return money;}
 	}
 
 	@Override
@@ -56,9 +55,9 @@ public class SelectSQLData implements ISQLSelect<SelectSQLData.Data>{
 
 		Data data = new Data();
 
-		data.setId(result.getInteger(1));
-		data.setFullName(result.getString(2));
-		data.setMoney(result.getInteger(3));
+		data.setId((Integer)result.getObject(1));
+		data.setFullName((String)result.getObject(2));
+		data.setMoney((Short)result.getObject(3));
 
 		return data;
 	}

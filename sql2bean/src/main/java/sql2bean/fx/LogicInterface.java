@@ -1,11 +1,12 @@
 package sql2bean.fx;
 
 import java.sql.ResultSetMetaData;
+import java.util.List;
 
-import sql2bean.beans.SQLKeyValue;
-import sql2bean.sql.ColumnInfo;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
+import sql2bean.beans.SQLKeyValue;
+import sql2bean.sql.ColumnInfo;
 
 import com.google.inject.ImplementedBy;
 
@@ -17,7 +18,7 @@ public interface LogicInterface<T> {
 	 * @param sql 実施するSQL
 	 * @return SQLの結果
 	 */
-	ObservableList<T> execute(String sql);
+	ObservableList<T> execute(String sql, List<SQLKeyValue> args);
 
 
 	/**

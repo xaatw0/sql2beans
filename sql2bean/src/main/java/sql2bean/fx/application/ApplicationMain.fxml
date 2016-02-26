@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane prefHeight="116.0" prefWidth="224.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sql2bean.fx.application.ApplicationController">
+   <bottom>
+      <HBox alignment="CENTER" prefHeight="29.0" prefWidth="224.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button alignment="TOP_CENTER" mnemonicParsing="false" onAction="#btnSaveClicked" prefHeight="23.0" prefWidth="56.0" text="保存" />
+            <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#btnDeleteClicked" text="削除" />
+            <Button alignment="TOP_LEFT" mnemonicParsing="false" onAction="#btnCancelClicked" text="キャンセル" />
+         </children>
+      </HBox>
+   </bottom>
+   <center>
+      <GridPane BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="107.0" minWidth="10.0" prefWidth="78.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="146.0" minWidth="10.0" prefWidth="146.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="名称" />
+            <Label text="DB名" GridPane.rowIndex="1" />
+            <Label text="DB接続名" GridPane.rowIndex="2" />
+            <TextField fx:id="txtAppName" GridPane.columnIndex="1" />
+            <TextField fx:id="txtDbName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="txtDbConnection" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+         </children>
+      </GridPane>
+   </center>
+   <top>
+      <Label text="アプリケーション" BorderPane.alignment="CENTER" />
+   </top>
+</BorderPane>

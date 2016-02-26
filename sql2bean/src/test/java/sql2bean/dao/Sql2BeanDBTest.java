@@ -3,10 +3,6 @@ package sql2bean.dao;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.List;
-
 import org.junit.Test;
 
 public class Sql2BeanDBTest {
@@ -27,14 +23,14 @@ public class Sql2BeanDBTest {
 		}
 	}
 
-
+/**
 	@Test
 	public void testExecuteUpdate2() throws SQLException {
 		try(Sql2BeanDB db = Sql2BeanDB.getConnection()){
 
 			db.executeUpdate(new CreateTableSQLData());
 
-			InsertSQLData data = new InsertSQLData();
+			SQLInsert data = new SQLInsert();
 			PreparedStatement preparedStatement = db.preparedStatement(data.getSql());
 
 			data.setId("TEST");
@@ -59,5 +55,5 @@ public class Sql2BeanDBTest {
 
 			db.executeUpdate(new DropTableSQLData());
 		}
-	}
+	}*/
 }

@@ -1,7 +1,6 @@
-package sql2bean.dao;
+package $package_name;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class $bean_name$extendInfo{
 
@@ -49,7 +48,7 @@ $getOverride
 		Data data = new Data();
 
 #foreach ($data in $resultFormat)
-		data.set${data.keyAsPascalName}(result.get${data.type.ClassName}(${velocityCount}));
+		data.set${data.keyAsPascalName}((${data.type.ClassName})result.getObject(${velocityCount}));
 #end
 
 		return data;

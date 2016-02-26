@@ -17,16 +17,26 @@
          <children>
             <HBox prefHeight="28.0" prefWidth="414.0">
                <children>
-                  <Button id="btnExecute" fx:id="btnExecute" mnemonicParsing="false" onAction="#execute" text="Execute" />
                   <Button fx:id="btnAnalyze" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#analyze" text="Analyze" />
+                  <Label fx:id="lblStatementType" prefHeight="15.0" prefWidth="133.0" text="Statement Type" />
+                  <Button id="btnExecute" fx:id="btnExecute" mnemonicParsing="false" onAction="#execute" text="Execute" />
+                  <Button fx:id="btnExport" mnemonicParsing="false" onAction="#export" text="Export" />
                </children>
             </HBox>
             <HBox>
                <children>
-                  <Label text="SQL ID" />
-                  <TextField fx:id="txtSqlId" />
+                  <Label text="SQL Name" />
+                  <TextField fx:id="txtSqlId" prefHeight="23.0" prefWidth="166.0" />
                   <Button id="btnSave" fx:id="btnSave" mnemonicParsing="false" onAction="#save" text="Save" />
                   <Button fx:id="btnLoad" mnemonicParsing="false" onAction="#load" text="Load" />
+               </children>
+            </HBox>
+            <HBox prefHeight="28.0" prefWidth="591.0">
+               <children>
+                  <Label text="Package Name" />
+                  <ComboBox fx:id="cmbPackage" prefHeight="23.0" prefWidth="173.0" />
+                  <Button fx:id="btnPackage" mnemonicParsing="false" onAction="#btnAddPackagePressed" text="Add" />
+                  <Button fx:id="btnRemovePackage" mnemonicParsing="false" onAction="#btnRemovePackagePressed" text="Remove" />
                </children>
             </HBox>
          </children>

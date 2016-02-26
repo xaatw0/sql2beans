@@ -1,11 +1,16 @@
 package sql2bean.fx;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.List;
+import java.util.Optional;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,10 +19,15 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import javax.activation.UnsupportedDataTypeException;
 
+import sql2bean.beanmaker.BeanMaker;
 import sql2bean.beans.SQLKeyValue;
+import sql2bean.dao.ISQLType;
 import sql2bean.sql.ColumnInfo;
+import sql2bean.sql.SQLAnalyzer;
 
-public class LogicDummy implements LogicInterface<DummyObject> {
+public class LogicDummy implements LogicInterface<Object> {
+
+	private SQLAnalyzer analyzer = new SQLAnalyzer();
 
 	private ResultSetMetaData metaData;
 
@@ -28,33 +38,86 @@ public class LogicDummy implements LogicInterface<DummyObject> {
 	}
 
 	@Override
-	public ObservableList<DummyObject> execute(String sql) {
+	public ObservableList execute(String sql, List<SQLKeyValue> lstArgs) {
 
-		ObservableList<DummyObject> data = FXCollections.observableArrayList();
+		ObservableList<Object> data = FXCollections.observableArrayList();
 
 		try{
 	        Connection conn = DriverManager.
 	            getConnection("jdbc:h2:~/test", "sa", "");
 
-	        Statement statement = conn.createStatement();
-	        statement.execute("DROP TABLE IF EXISTS USER;");
-	        statement.execute("CREATE TABLE USER (ID INT, NAME VARCHAR(50));");
-	        statement.execute("INSERT INTO USER VALUES(1,'test1');");
-	        statement.execute("INSERT INTO USER VALUES(2,'test2');");
-	        statement.execute("INSERT INTO USER VALUES(3,'test3');");
+	        List<SQLKeyValue> params = analyzer.analyze(sql,conn);
+	        for (SQLKeyValue newData: params){
 
-	        ResultSet result = statement.executeQuery("SELECT ID,NAME FROM USER ORDER BY ID;");
-			metaData = result.getMetaData();
+	        	Optional<SQLKeyValue> inputData = lstArgs.stream().filter(p->p.getKey().equals(newData.getKey())).findFirst();
+	        	if(inputData.isPresent()){
+	        		newData.setValue(inputData.get().getValue());
+	        	}
+	        }
 
-			columnInfos = ColumnInfo.createColumnInfo(result.getMetaData());
+	        PreparedStatement preparedStatement = conn.prepareStatement(analyzer.getPreparedSql());
+	        analyzer.setParameter(preparedStatement);
 
-			while(result.next()){
-				data.add(new DummyObject(result.getInt("ID"), result.getString("NAME")));
-			}
+	        // Select文かどうか
+	        boolean isSelectStatement = preparedStatement.getMetaData() != null;
 
+	        ResultSet result = null;
+	        if (isSelectStatement){
+	        	result = preparedStatement.executeQuery();
+		        analyzer.analyze(result.getMetaData());
+	        } else {
+	        	preparedStatement.executeUpdate();
+	        }
+
+	        // ソースを作成する
+	        String source = isSelectStatement
+	        		? analyzer.writeSelectBean("testpackage", "testclass", ISQLType.NONE)
+	        		: analyzer.writeExecuteBean("testpackage", "testclass", ISQLType.NONE);
+
+	        BeanMaker maker = new BeanMaker("target\\classes");
+	        maker.compile("testpackage.testclass", source);
+
+	        // select文は表に結果を表示する
+	        if (result != null){
+		        Class clazz = Class.forName("testpackage.testclass");
+		        Object dao = clazz.newInstance();
+		        Method convert = clazz.getMethod("convert", ResultSet.class);
+
+				columnInfos = ColumnInfo.createColumnInfo(result.getMetaData());
+
+				while(result.next()){
+
+					Object obj = convert.invoke(dao, result);
+					data.add(obj);
+				}
+	        }
 	        conn.close();
 
 		}catch(SQLException | UnsupportedDataTypeException e){
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
 
@@ -91,13 +154,13 @@ public class LogicDummy implements LogicInterface<DummyObject> {
 
 
 	@Override
-	public void setCell(TableColumn<DummyObject, String> column, String columnName) {
-		column.setCellValueFactory(new PropertyValueFactory<DummyObject,String>(columnName));
+	public void setCell(TableColumn<Object, String> column, String columnName) {
+		column.setCellValueFactory(new PropertyValueFactory<Object,String>(columnName));
 	}
 
 	@Override
 	public void analize(String sql, ObservableList<SQLKeyValue> args) {
-		// TODO 自動生成されたメソッド・スタブ
+
 
 	}
 

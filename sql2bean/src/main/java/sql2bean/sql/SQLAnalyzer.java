@@ -2,6 +2,9 @@ package sql2bean.sql;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.sql.Connection;
+import java.sql.ParameterMetaData;
+import java.sql.PreparedStatement;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -24,7 +27,9 @@ import sql2bean.beans.SQLKeyValue;
 import sql2bean.dao.ISQLType;
 
 public class SQLAnalyzer {
-	private Pattern ptnArgument = Pattern.compile("\\$\\{([^)]*?)\\}");
+	private static Pattern ptnArgument = Pattern.compile("\\$\\{([^)]*?)\\}");
+
+	private static Pattern ptnSql = Pattern.compile("[\\t\\n\\r]+");
 
 	private String originalSql = null;
 
@@ -34,6 +39,8 @@ public class SQLAnalyzer {
 
 	private List<SQLKeyValue> lstResult;
 
+	private ISQLType isqlType;
+
 	/**
 	 * SQLを分析して、SQLKeyValueのリストを作成する。
 	 * プリペアステートメントの準備をする。更新系に使用する。
@@ -42,10 +49,12 @@ public class SQLAnalyzer {
 	 */
 	public List<SQLKeyValue> analyze(String sql){
 
-		originalSql = sql;
-		preparedSql = ptnArgument.matcher(sql).replaceAll("?");
+		String sqlWithoutTags = ptnSql.matcher(sql).replaceAll(" ");
 
-		Matcher matcher = ptnArgument.matcher(sql);
+		originalSql = sqlWithoutTags;
+		preparedSql = ptnArgument.matcher(sqlWithoutTags).replaceAll("?");
+
+		Matcher matcher = ptnArgument.matcher(sqlWithoutTags);
 
 		Map<String, SQLKeyValue> result = new LinkedHashMap<>();
 		int index = 1;
@@ -64,6 +73,58 @@ public class SQLAnalyzer {
 		}
 
 		return lstParameter = result.values().stream().collect(Collectors.toList());
+	}
+
+	public List<SQLKeyValue> analyze(String sql, Connection connection) throws SQLException{
+
+		String sqlWithoutTags = ptnSql.matcher(sql).replaceAll(" ");
+
+		originalSql = sqlWithoutTags;
+		preparedSql = ptnArgument.matcher(sqlWithoutTags).replaceAll("?");
+
+		PreparedStatement statement = connection.prepareStatement(preparedSql);
+
+		// 取得結果用のメタデータを分析して、更新系か取得系のSQLかを判断する
+		isqlType = statement.getMetaData() == null? ISQLType.ISQLExecute:ISQLType.ISQLSelect;
+
+		// パラメータの内容を取得する
+		ParameterMetaData parameterMetaData = statement.getParameterMetaData();
+		Map<String, SQLKeyValue> result = new LinkedHashMap<>();
+
+		Matcher matcher = ptnArgument.matcher(sqlWithoutTags);
+
+		int index = 1;
+		while(matcher.find()){
+
+			String key = matcher.group(1);
+
+			SQLKeyValue value = result.get(key);
+			if (value == null){
+				value = new SQLKeyValue(key);
+
+				int sqlType = parameterMetaData.getParameterType(index);
+				Optional<DataType> type =
+						Arrays.stream(DataType.values())
+						.filter(p->p.getValueStream().anyMatch(q -> q == sqlType))
+						.findFirst();
+
+				value.setType(type.get());
+				result.put(key, value);
+			}
+
+			value.addParameter(index);
+			index++;
+		}
+
+		return lstParameter = result.values().stream().collect(Collectors.toList());
+	}
+
+	public void setParameter(PreparedStatement statement) throws SQLException{
+		for (SQLKeyValue param: lstParameter){
+			for (Integer index: param.getParamNos()){
+				statement.setObject(index, param.getValue(), param.getType().getType());
+			}
+		}
 	}
 
 	/**
@@ -127,6 +188,10 @@ public class SQLAnalyzer {
 
 	public String getPreparedSql(){
 		return preparedSql;
+	}
+
+	public ISQLType getSqlType(){
+		return isqlType;
 	}
 
 	private final static String VM_NAME = "executeBean.vm";
