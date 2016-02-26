@@ -108,6 +108,7 @@ public class DBInfo implements IDBInfo,Closeable{
 
 		PackageSelect select = new PackageSelect();
 		PreparedStatement statement = connection.prepareStatement(select.getSql());
+		select.setParameters(statement);
 		ResultSet result = statement.executeQuery();
 
 		while(result.next()){
@@ -145,7 +146,8 @@ public class DBInfo implements IDBInfo,Closeable{
 		PackageUpdate update = new PackageUpdate();
 		PreparedStatement statement = connection.prepareStatement(update.getSql());
 
-		update.setPackageId(data.getAppId());
+		update.setPackageId(data.getPackageId());
+		update.setAppId(data.getAppId());
 		update.setPackageName(data.getPackageName());
 		update.setFolder(data.getFolder());
 		update.addBach(statement);

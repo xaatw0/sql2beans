@@ -5,10 +5,10 @@ import java.sql.SQLException;
 
 public class PackageUpdate {
 	// original SQL
-	//   update PACKAGE set PACKAGE_NAME = ${PACKAGE_NAME}, FOLDER = ${FOLDER} where PACKAGE_ID = ${PACKAGE_ID}
+	//   update PACKAGE set PACKAGE_NAME = ${PACKAGE_NAME}, FOLDER = ${FOLDER, APP_ID = ${APP_ID}} where PACKAGE_ID = ${PACKAGE_ID}
 
 	private final static String SQL_STATEMENT =
-			"update PACKAGE set PACKAGE_NAME = ?, FOLDER = ? where PACKAGE_ID = ?";
+			"update PACKAGE set PACKAGE_NAME = ?, FOLDER = ?, APP_ID = ? where PACKAGE_ID = ?";
 
 	public String getSql() {
 		return SQL_STATEMENT;
@@ -29,12 +29,17 @@ public class PackageUpdate {
 	public void setPackageId(Integer packageId){this.packageId = packageId;}
 	public Integer getPackageId(){return packageId;}
 
+	// APP_ID
+	private Integer appId;
+	public void setAppId(Integer appId){this.appId = appId;}
+	public Integer getAppId(){return appId;}
 
 	public void addBach(PreparedStatement preparedStatement) throws SQLException{
 
 		preparedStatement.setObject(1, getPackageName(), 12);
 		preparedStatement.setObject(2, getFolder(), 12);
-		preparedStatement.setObject(3, getPackageId(), 4);
+		preparedStatement.setObject(3, getAppId(), 4);
+		preparedStatement.setObject(4, getPackageId(), 4);
 
 		preparedStatement.addBatch();
 	}

@@ -1,41 +1,41 @@
 package sql2bean.fx.packagemaker;
 
-import java.io.File;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
-import sql2bean.beans.PackageBean;
+import sql2bean.dao.table.PackageSelect;
 import sql2bean.fx.IPanel;
 
-public class PackageMakerController implements Initializable, IPanel<PackageBean>{
+import com.google.inject.Inject;
+
+public class PackageMakerController implements Initializable, IPanel<PackageSelect.Data>{
+
+	@Inject
+	private PackageMakerLogic logic;
 
 	@FXML private TextField txtPackage;
 
 	@FXML private TextField txtDirectory;
 
-	private PackageBean selectedPackage;
-
-	private boolean isSave;
-
 	public static final String FXML_NAME = "PackageMaker.fxml";
 
 	@Override
 	public void initialize(URL paramURL, ResourceBundle paramResourceBundle) {
-		selectedPackage = new PackageBean();
-		selectedPackage.packageNameProperty().bindBidirectional(txtPackage.textProperty());
-		selectedPackage.directoryPathProperty().bindBidirectional(txtDirectory.textProperty());
+
+		logic.packageName().bind(txtPackage.textProperty());
+		logic.directoryPath().bindBidirectional(txtDirectory.textProperty());
 	}
 
 	@FXML
-	public void btnSavePressed(ActionEvent event){
+	public void btnSavePressed(ActionEvent event) throws SQLException{
 
-		isSave = true;
+		logic.save();
     	close();
 	}
 
@@ -50,25 +50,18 @@ public class PackageMakerController implements Initializable, IPanel<PackageBean
 
 	@FXML
 	public void btnChooseFolder(ActionEvent event){
-		DirectoryChooser chooser = new DirectoryChooser();
-		chooser.setTitle("該当パッケージを出力するディレクトリを選択してください");
-
-	    File file = chooser.showDialog(new Stage());
-	    if (file != null){
-	    	txtDirectory.textProperty().set(file.getAbsolutePath());
-	    }
+		logic.chooseDirectory();
 	}
 
 	@Override
-	public PackageBean getData() {
+	public PackageSelect.Data getData() {
 
-		return isSave ? selectedPackage: null;
+		return logic.get();
 	}
 
 	@Override
-	public void setData(PackageBean data) {
+	public void setData(PackageSelect.Data data) {
 
-		selectedPackage.packageNameProperty().set(data.getPackageName());
-		selectedPackage.directoryPathProperty().set(data.getDirectoryPath());
+		logic.set(data);
 	}
 }

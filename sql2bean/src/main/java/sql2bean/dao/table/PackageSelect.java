@@ -29,7 +29,7 @@ public class PackageSelect {
 		preparedStatement.setObject(2, getPackageName(), 12);
 	}
 
-	public class Data{
+	public static class Data{
 
 		// PACKAGE_ID
 		private Integer packageId;
